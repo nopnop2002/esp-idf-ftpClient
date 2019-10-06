@@ -284,25 +284,14 @@ void app_main(void)
 	if (ret != ESP_OK) return;
 #endif 
 
-	// Use POSIX and C standard library functions to work with files.
-	// First create a file
 	char srcFileName[64];
 	char dstFileName[64];
 	char outFileName[64];
 	sprintf(srcFileName, "%s/hello.txt", base_path);
 	sprintf(dstFileName, "hello.txt");
 	sprintf(outFileName, "%s/out.txt", base_path);
-	ESP_LOGI(TAG, "Opening file");
-	FILE* f = fopen(srcFileName, "w");
-	if (f == NULL) {
-		ESP_LOGE(TAG, "Failed to open file for writing");
-		return;
-	}
-	fprintf(f, "Hello World!\n");
-	fclose(f);
-	ESP_LOGI(TAG, "File written");
 
-	// Put to ftp serve
+	// Open FTP server
 	ESP_LOGI(TAG, "ftp server:%s", EXAMPLE_FTP_SERVER);
 	ESP_LOGI(TAG, "ftp user  :%s", EXAMPLE_FTP_USER);
 	static NetBuf_t* ftpClientNetBuf = NULL;
@@ -314,6 +303,7 @@ void app_main(void)
 		return;
 	}
 
+	// Login FTP server
 	int login = ftpClient->ftpClientLogin(EXAMPLE_FTP_USER, EXAMPLE_FTP_PASSWORD, ftpClientNetBuf);
 	ESP_LOGI(TAG, "login=%d", login);
 	if (login == 0) {
@@ -321,11 +311,11 @@ void app_main(void)
 		return;
 	}
 
-	// Remore Directory
+	// Remote Directory
 	char line[128];
 	//ftpClient->ftpClientDir(outFileName, "/", ftpClientNetBuf);
 	ftpClient->ftpClientDir(outFileName, ".", ftpClientNetBuf);
-	f = fopen(outFileName, "r");
+	FILE* f = fopen(outFileName, "r");
 	if (f == NULL) {
 		ESP_LOGE(TAG, "Failed to open file for reading");
 		return;
@@ -336,6 +326,17 @@ void app_main(void)
 		ESP_LOGI(TAG, "%s", line);
 	}
 	fclose(f);
+
+	// Use POSIX and C standard library functions to work with files.
+	// Create file
+	f = fopen(srcFileName, "w");
+	if (f == NULL) {
+		ESP_LOGE(TAG, "Failed to open file for writing");
+		return;
+	}
+	fprintf(f, "Hello World!\n");
+	fclose(f);
+	ESP_LOGI(TAG, "File written");
 
 	// Put to FTP server
 	ftpClient->ftpClientPut(srcFileName, dstFileName, FTP_CLIENT_TEXT, ftpClientNetBuf);
