@@ -288,8 +288,10 @@ void app_main(void)
 	// First create a file
 	char srcFileName[64];
 	char dstFileName[64];
+	char outFileName[64];
 	sprintf(srcFileName, "%s/hello.txt", base_path);
 	sprintf(dstFileName, "hello.txt");
+	sprintf(outFileName, "%s/out.txt", base_path);
 	ESP_LOGI(TAG, "Opening file");
 	FILE* f = fopen(srcFileName, "w");
 	if (f == NULL) {
@@ -305,14 +307,36 @@ void app_main(void)
 	ESP_LOGI(TAG, "ftp user  :%s", EXAMPLE_FTP_USER);
 	static NetBuf_t* ftpClientNetBuf = NULL;
 	FtpClient* ftpClient = getFtpClient();
-	int connected = ftpClient->ftpClientConnect(EXAMPLE_FTP_SERVER, 21, &ftpClientNetBuf);
-	ESP_LOGI(TAG, "connected=%d", connected);
-	if (connected == 0) {
+	int connect = ftpClient->ftpClientConnect(EXAMPLE_FTP_SERVER, 21, &ftpClientNetBuf);
+	ESP_LOGI(TAG, "connect=%d", connect);
+	if (connect == 0) {
 		ESP_LOGE(TAG, "FTP server connect fail");
 		return;
 	}
 
-	ftpClient->ftpClientLogin(EXAMPLE_FTP_USER, EXAMPLE_FTP_PASSWORD, ftpClientNetBuf);
+	int login = ftpClient->ftpClientLogin(EXAMPLE_FTP_USER, EXAMPLE_FTP_PASSWORD, ftpClientNetBuf);
+	ESP_LOGI(TAG, "login=%d", login);
+	if (login == 0) {
+		ESP_LOGE(TAG, "FTP server login fail");
+		return;
+	}
+
+	// Remore Directory
+	char line[128];
+	ftpClient->ftpClientDir(outFileName, "/", ftpClientNetBuf);
+	f = fopen(outFileName, "r");
+	if (f == NULL) {
+		ESP_LOGE(TAG, "Failed to open file for reading");
+		return;
+	}
+	while (fgets(line, sizeof(line), f) != NULL) {
+		int len = strlen(line);
+		line[len-1] = 0;
+		ESP_LOGI(TAG, "%s", line);
+	}
+	fclose(f);
+
+	// Put to FTP server
 	ftpClient->ftpClientPut(srcFileName, dstFileName, FTP_CLIENT_TEXT, ftpClientNetBuf);
 	ESP_LOGI(TAG, "ftpClientPut %s ---> %s", srcFileName, dstFileName);
 
@@ -320,7 +344,7 @@ void app_main(void)
 	unlink(srcFileName);
 	ESP_LOGI(TAG, "File removed");
 
-	// Get from ftp serve
+	// Get from FTP server
 	ftpClient->ftpClientGet(srcFileName, dstFileName, FTP_CLIENT_TEXT, ftpClientNetBuf);
 	ESP_LOGI(TAG, "ftpClientGet %s <--- %s", srcFileName, dstFileName);
 
@@ -331,7 +355,6 @@ void app_main(void)
 		ESP_LOGE(TAG, "Failed to open file for reading");
 		return;
 	}
-	char line[64];
 	fgets(line, sizeof(line), f);
 	fclose(f);
 	// strip newline
