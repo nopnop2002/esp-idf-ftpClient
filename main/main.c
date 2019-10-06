@@ -323,7 +323,8 @@ void app_main(void)
 
 	// Remore Directory
 	char line[128];
-	ftpClient->ftpClientDir(outFileName, "/", ftpClientNetBuf);
+	//ftpClient->ftpClientDir(outFileName, "/", ftpClientNetBuf);
+	ftpClient->ftpClientDir(outFileName, ".", ftpClientNetBuf);
 	f = fopen(outFileName, "r");
 	if (f == NULL) {
 		ESP_LOGE(TAG, "Failed to open file for reading");
