@@ -1,68 +1,68 @@
 menu "FTP Client Configuration"
 
-    comment "for File System Selection"
+	comment "for File System Selection"
 
-    choice FILE_SYSTEM
-        prompt "File System Selection"
-        default SPIFFS
-        help
-            Select File System.
-        config SPIFFS
-            bool "SPIFFS File System on FLASH"
-            help
-                Use SPIFFS File System on FLASH.
-        config FATFS
-            bool "FAT File System on FLASH"
-            help
-                Use FAT File System on FLASH.
-        config SPI_SDCARD
-            bool "FAT File System on SPI SDCARD"
-            help
-                Use FAT File System on SPI SDCARD.
-        config MMC_SDCARD
-            bool "FAT File System on MMC SDCARD"
-            help
-                Use FAT File System on MMC SDCARD.
-    endchoice
+	choice FILE_SYSTEM
+		prompt "File System Selection"
+		default SPIFFS
+		help
+			Select File System.
+		config SPIFFS
+			bool "SPIFFS File System on FLASH"
+			help
+				Use SPIFFS File System on FLASH.
+		config FATFS
+			bool "FAT File System on FLASH"
+			help
+				Use FAT File System on FLASH.
+		config SPI_SDCARD
+			bool "FAT File System on SPI SDCARD"
+			help
+				Use FAT File System on SPI SDCARD.
+		config MMC_SDCARD
+			bool "FAT File System on MMC SDCARD"
+			help
+				Use FAT File System on MMC SDCARD.
+	endchoice
 
-    comment "for WiFi Setting"
+	comment "for WiFi Setting"
 
-    config ESP_WIFI_SSID
-        string "WiFi SSID"
-        default "myssid"
-        help
-            SSID (network name) for the example to connect to.
+	config ESP_WIFI_SSID
+		string "WiFi SSID"
+		default "myssid"
+		help
+			SSID (network name) for the example to connect to.
 
-    config ESP_WIFI_PASSWORD
-        string "WiFi Password"
-        default "mypassword"
-        help
-            WiFi password (WPA or WPA2) for the example to use.
+	config ESP_WIFI_PASSWORD
+		string "WiFi Password"
+		default "mypassword"
+		help
+			WiFi password (WPA or WPA2) for the example to use.
 
-    config ESP_MAXIMUM_RETRY
-        int "Maximum retry"
-        default 5
-        help
-            Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+	config ESP_MAXIMUM_RETRY
+		int "Maximum retry"
+		default 5
+		help
+			Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
 
-    comment "for FTP Server Setting"
+	comment "for FTP Server Setting"
 
-    config FTP_SERVER
-        string "FTP Server"
-        default "myftpserver"
-        help
-            FTP Server host name or ip address for the example to use.
+	config FTP_SERVER
+		string "FTP Server"
+		default "myftpserver"
+		help
+			FTP Server host name or ip address for the example to use.
 
-    config FTP_USER
-        string "FTP User Name"
-        default "myftpuser"
-        help
-            FTP User name for the example to use.
+	config FTP_USER
+		string "FTP User Name"
+		default "myftpuser"
+		help
+			FTP User name for the example to use.
 
-    config FTP_PASSWORD
-        string "FTP Password"
-        default "myftppass"
-        help
-            FTP Password for the example to use.
+	config FTP_PASSWORD
+		string "FTP Password"
+		default "myftppass"
+		help
+			FTP Password for the example to use.
 
 endmenu
