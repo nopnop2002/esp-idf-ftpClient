@@ -4,13 +4,13 @@ FTP Client for esp-idf
 I ported from [here](https://github.com/JohnnyB1290/ESP32-FTP-Client).   
 
 You have to set this config value with menuconfig.   
-CONFIG_FILE_SYSTEM   
-CONFIG_ESP_WIFI_SSID   
-CONFIG_ESP_WIFI_PASSWORD   
-CONFIG_ESP_MAXIMUM_RETRY   
-CONFIG_FTP_SERVER   
-CONFIG_FTP_USER   
-CONFIG_FTP_PASSWORD   
+- CONFIG_FILE_SYSTEM   
+- CONFIG_ESP_WIFI_SSID   
+- CONFIG_ESP_WIFI_PASSWORD   
+- CONFIG_ESP_MAXIMUM_RETRY   
+- CONFIG_FTP_SERVER   
+- CONFIG_FTP_USER   
+- CONFIG_FTP_PASSWORD   
 
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
