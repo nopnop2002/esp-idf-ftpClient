@@ -20,10 +20,10 @@ make flash monitor
 ```
 
 ESP32 supports the following file systems.   
-1.SPIFFS file system on FLASH   
-2.FAT file system on FLASH   
-3.FAT file system on SPI peripheral SDCARD   
-4.FAT file system on SDMMC peripheral SDCARD   
+- SPIFFS file system on FLASH   
+- FAT file system on FLASH   
+- FAT file system on SPI peripheral SDCARD   
+- FAT file system on SDMMC peripheral SDCARD   
 You can select any one using menuconfig.   
 
 ![ftpClient-config](https://user-images.githubusercontent.com/6020549/65889407-2b489c80-e3dc-11e9-9e6c-acae8f69880f.jpg)
