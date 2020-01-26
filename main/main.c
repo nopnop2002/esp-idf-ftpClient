@@ -1,4 +1,4 @@
-/* SPIFFS filesystem example.
+/* FTP Client example.
    This example code is in the Public Domain (or CC0 licensed, at your option.)
 
    Unless required by applicable law or agreed to in writing, this
@@ -64,10 +64,10 @@ static EventGroupHandle_t s_wifi_event_group;
 // Pin mapping when using SPI mode.
 // With this mapping, SD card can be used both in SPI and 1-line SD mode.
 // Note that a pull-up on CS line is required in SD mode.
-#define PIN_NUM_MISO 2
-#define PIN_NUM_MOSI 15
-#define PIN_NUM_CLK  14
-#define PIN_NUM_CS	 13
+#define PIN_NUM_MISO	2
+#define PIN_NUM_MOSI	15
+#define PIN_NUM_CLK		14
+#define PIN_NUM_CS		13
 #endif 
 
 static int s_retry_num = 0;
@@ -203,9 +203,9 @@ wl_handle_t mountFATFS(char * partition_label, char * base_path) {
 	// To mount device we need name of device partition, define base_path
 	// and allow format partition in case if it is new one and was not formated before
 	const esp_vfs_fat_mount_config_t mount_config = {
-			.max_files = 4,
-			.format_if_mount_failed = true,
-			.allocation_unit_size = CONFIG_WL_SECTOR_SIZE
+		.max_files = 4,
+		.format_if_mount_failed = true,
+		.allocation_unit_size = CONFIG_WL_SECTOR_SIZE
 	};
 	wl_handle_t s_wl_handle;
 	esp_err_t err = esp_vfs_fat_spiflash_mount(base_path, partition_label, &mount_config, &s_wl_handle);
