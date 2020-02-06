@@ -9,19 +9,14 @@ See below.
 
 - CONFIG_ESP_WIFI_SSID   
 SSID of your wifi.
-
 - CONFIG_ESP_WIFI_PASSWORD   
 PASSWORD of your wifi.
-
 - CONFIG_ESP_MAXIMUM_RETRY   
 Maximum number of retries when connecting to wifi.
-
 - CONFIG_FTP_SERVER   
 IP or MDNS of FTP Server.
-
 - CONFIG_FTP_USER   
 Username of FTP Server.
-
 - CONFIG_FTP_PASSWORD   
 Password of FTP Server.
 
