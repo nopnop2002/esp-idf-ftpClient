@@ -1,5 +1,5 @@
 # esp-idf-ftpClient
-FTP Client for esp-idf
+FTP Client for esp-idf.   
 I ported from [here](https://github.com/JohnnyB1290/ESP32-FTP-Client).   
 
 ---
