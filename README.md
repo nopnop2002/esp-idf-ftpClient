@@ -1,12 +1,11 @@
 # esp-idf-ftpClient
 FTP Client for esp-idf
-
 I ported from [here](https://github.com/JohnnyB1290/ESP32-FTP-Client).   
 
+# Configure
 You have to set this config value with menuconfig.   
 - CONFIG_FILE_SYSTEM   
 See below.
-
 - CONFIG_ESP_WIFI_SSID   
 SSID of your wifi.
 - CONFIG_ESP_WIFI_PASSWORD   
@@ -27,6 +26,8 @@ make menuconfig
 make flash monitor
 ```
 
+![ftpClient-config](https://user-images.githubusercontent.com/6020549/65889407-2b489c80-e3dc-11e9-9e6c-acae8f69880f.jpg)
+
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
 - SPIFFS file system on FLASH   
@@ -34,7 +35,6 @@ You can select any one using menuconfig.
 - FAT file system on SPI peripheral SDCARD   
 - FAT file system on SDMMC peripheral SDCARD   
 
-![ftpClient-config](https://user-images.githubusercontent.com/6020549/65889407-2b489c80-e3dc-11e9-9e6c-acae8f69880f.jpg)
 ![ftpClienc-config-filesystem](https://user-images.githubusercontent.com/6020549/65959000-c2b8f880-e48b-11e9-99d2-7cdf1cd7efc8.jpg)
 
 ---
