@@ -67,7 +67,7 @@ __Must be formatted with FAT32 before use__
 |ESP32-S2 pin|SPI pin|Notes|
 |:-:|:-:|:-:|
 |GPIO14|SCK|10k pull up if can't mount|
-|GPIO15|MOSI10k pull up if can't mount|
+|GPIO15|MOSI|10k pull up if can't mount|
 |GPIO2|MISO|10k pull up if can't mount|
 |GPIO13|CS|10k pull up if can't mount|
 |N/C|CD|Not used|
