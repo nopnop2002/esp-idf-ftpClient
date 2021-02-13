@@ -118,6 +118,7 @@ When adding a pullup to this pin for SD card operation, consider the following:
 
 # Screen Shot   
 ![ScrrenShot](https://user-images.githubusercontent.com/6020549/107837485-5f133f00-6de4-11eb-9fe8-775443c6836d.jpg)
+- Get remote file list   
 - Write local file   
 - Put file to server   
 - Remove local file   
