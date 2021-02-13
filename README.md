@@ -81,7 +81,7 @@ Note: This example doesn't utilize card detect (CD) and write protect (WP) signa
 __Must be formatted with FAT32 before use__
 
 |ESP32 pin|SD card pin|Notes|
-|:-:|:-:|:-:|
+|:-:|:-:|:--|
 |GPIO14|CLK|10k pullup|
 |GPIO15|CMD|10k pullup|
 |GPIO2|D0|10k pullup|
@@ -94,7 +94,7 @@ __Must be formatted with FAT32 before use__
 |GND|GND||
 
 |ESP32-S2 pin|SD card pin|Notes|
-|:-:|:-:|:-:|
+|:-:|:-:|:--|
 |GPIO14|CLK|10k pullup|
 |GPIO15|CMD|10k pullup|
 |GPIO2|D0|10k pullup|
