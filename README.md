@@ -59,8 +59,6 @@ __Must be formatted with FAT32 before use__
 |GPIO15|MOSI|10k pull up if can't mount|
 |GPIO2|MISO|10k pull up if can't mount|
 |GPIO13|CS|10k pull up if can't mount|
-|N/C|CD|Not used|
-|N/C|WP|Not used|
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
@@ -70,8 +68,6 @@ __Must be formatted with FAT32 before use__
 |GPIO15|MOSI|10k pull up if can't mount|
 |GPIO2|MISO|10k pull up if can't mount|
 |GPIO13|CS|10k pull up if can't mount|
-|N/C|CD|Not used|
-|N/C|WP|Not used|
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
