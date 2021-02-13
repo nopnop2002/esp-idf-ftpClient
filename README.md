@@ -117,9 +117,9 @@ When adding a pullup to this pin for SD card operation, consider the following:
     * Another option is to burn the flash voltage selection efuses. This will permanently select 3.3V output voltage for the internal regulator, and GPIO12 will not be used as a bootstrapping pin. Then it is safe to connect a pullup resistor to GPIO12. This option is suggested for production use.
 
 # Screen Shot   
+![ScrrenShot](https://user-images.githubusercontent.com/6020549/107837485-5f133f00-6de4-11eb-9fe8-775443c6836d.jpg)
 - Write local file   
 - Put file to server   
 - Remove local file   
 - Get file from sever   
 - Read local file   
-![ScrrenShot](https://user-images.githubusercontent.com/6020549/107837485-5f133f00-6de4-11eb-9fe8-775443c6836d.jpg)
