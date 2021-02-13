@@ -2,7 +2,24 @@
 FTP Client for esp-idf.   
 I ported from [here](https://github.com/JohnnyB1290/ESP32-FTP-Client).   
 
----
+# Installation for ESP32
+```
+git clone https://github.com/nopnop2002/esp-idf-ftpClient
+cd esp-idf-ftpClient/
+idf.py set-target esp32
+idf.py menuconfig
+idf.py flash
+```
+
+# Installation for ESP32-S2
+
+```
+git clone https://github.com/nopnop2002/esp-idf-ftpClient
+cd esp-idf-ftpClient/
+idf.py set-target esp32s2
+idf.py menuconfig
+idf.py flash
+```
 
 # Configure
 You have to set this config value with menuconfig.   
@@ -21,14 +38,8 @@ Username of FTP Server.
 - CONFIG_FTP_PASSWORD   
 Password of FTP Server.
 
-```
-git clone https://github.com/nopnop2002/esp-idf-ftpClient
-cd esp-idf-ftpClient/
-make menuconfig
-make flash monitor
-```
-
-![ftpClient-config](https://user-images.githubusercontent.com/6020549/65889407-2b489c80-e3dc-11e9-9e6c-acae8f69880f.jpg)
+![config-main](https://user-images.githubusercontent.com/6020549/107837354-d399ae00-6de3-11eb-9fb3-f221e536a5b9.jpg)
+![config-app-1](https://user-images.githubusercontent.com/6020549/107837352-d3011780-6de3-11eb-9ec5-bdb43bfe304d.jpg)
 
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
@@ -37,28 +48,9 @@ You can select any one using menuconfig.
 - FAT file system on SPI peripheral SDCARD   
 - FAT file system on SDMMC peripheral SDCARD   
 
-![ftpClienc-config-filesystem](https://user-images.githubusercontent.com/6020549/65959000-c2b8f880-e48b-11e9-99d2-7cdf1cd7efc8.jpg)
-
----
-
-# Using SPIFFS file system
-
-![ftpClient-config-SPIFFS](https://user-images.githubusercontent.com/6020549/65889414-2f74ba00-e3dc-11e9-9358-91db0a9f536a.jpg)![ftpClient-SPIFFS](https://user-images.githubusercontent.com/6020549/65889527-5fbc5880-e3dc-11e9-96be-123e43268388.jpg)
-
----
-
-# Using FAT file system on FLASH
-
-![ftpClient-config-FATFS](https://user-images.githubusercontent.com/6020549/65889428-326faa80-e3dc-11e9-9aca-6d37030ddf47.jpg)
-![ftpClient-FATFS](https://user-images.githubusercontent.com/6020549/65889548-64810c80-e3dc-11e9-96e0-8207b9d3fe9e.jpg)
-
----
+![config-app-2](https://user-images.githubusercontent.com/6020549/107837353-d399ae00-6de3-11eb-8aa5-ff4d7570191c.jpg)
 
 # Using FAT file system on SPI peripheral SDCARD
-
-![ftpClient-config-SPI_SDCARD](https://user-images.githubusercontent.com/6020549/65959025-dd8b6d00-e48b-11e9-9f79-6a4aa50c07b3.jpg)
-![ftpClient-SPI_SDCARD](https://user-images.githubusercontent.com/6020549/65959028-e2502100-e48b-11e9-8da4-79bbb0c0a8ec.jpg)
-
 __Must be formatted with FAT32 before use__
 
 |ESP32 pin|SPI pin|Notes|
@@ -70,14 +62,8 @@ __Must be formatted with FAT32 before use__
 |3.3V|VCC|Can't use 5V supply|
 |GND|GND||
 
----
 
 # Using FAT file system on SDMMC peripheral SDCARD
-
-![ftpClient-config-MMC_SDCARD](https://user-images.githubusercontent.com/6020549/65959060-f3009700-e48b-11e9-8fa8-d3f9572e7c08.jpg)
-
-![ftpClient-MMC_SDCARD](https://user-images.githubusercontent.com/6020549/65959066-f72cb480-e48b-11e9-96df-a7cc0dbdba32.jpg)
-
 __Must be formatted with FAT32 before use__
 
 |ESP32 pin|SD card pin|Notes|
@@ -91,3 +77,5 @@ __Must be formatted with FAT32 before use__
 |N/C|CD|optional, not used in the example|
 |N/C|WP|optional, not used in the example|
 
+# Screen Shot
+![ScrrenShot](https://user-images.githubusercontent.com/6020549/107837485-5f133f00-6de4-11eb-9fe8-775443c6836d.jpg)

@@ -31,19 +31,8 @@
 
 #include "FtpClient.h"
 
-static const char *TAG = "ftpClient";
-
-/* The examples use WiFi configuration that you can set via project configuration menu
-
-   If you'd rather not, just change the below entries to strings with
-   the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
-*/
-#define EXAMPLE_ESP_WIFI_SSID	   CONFIG_ESP_WIFI_SSID
-#define EXAMPLE_ESP_WIFI_PASS	   CONFIG_ESP_WIFI_PASSWORD
-#define EXAMPLE_ESP_MAXIMUM_RETRY  CONFIG_ESP_MAXIMUM_RETRY
-#define EXAMPLE_FTP_SERVER		   CONFIG_FTP_SERVER
-#define EXAMPLE_FTP_USER		   CONFIG_FTP_USER	
-#define EXAMPLE_FTP_PASSWORD	   CONFIG_FTP_PASSWORD
+static const char *TAG = "FTP";
+static char *MOUNT_POINT = "/root";
 
 //for test
 //#define CONFIG_SPIFFS 1
@@ -78,7 +67,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
 	if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
 		esp_wifi_connect();
 	} else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-		if (s_retry_num < EXAMPLE_ESP_MAXIMUM_RETRY) {
+		if (s_retry_num < CONFIG_ESP_MAXIMUM_RETRY) {
 			esp_wifi_connect();
 			s_retry_num++;
 			ESP_LOGI(TAG, "retry to connect to the AP");
@@ -122,8 +111,8 @@ esp_err_t wifi_init_sta()
 
 	wifi_config_t wifi_config = {
 		.sta = {
-			.ssid = EXAMPLE_ESP_WIFI_SSID,
-			.password = EXAMPLE_ESP_WIFI_PASS
+			.ssid = CONFIG_ESP_WIFI_SSID,
+			.password = CONFIG_ESP_WIFI_PASSWORD
 		},
 	};
 	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
@@ -142,10 +131,10 @@ esp_err_t wifi_init_sta()
 	 * happened. */
 	if (bits & WIFI_CONNECTED_BIT) {
 		ESP_LOGI(TAG, "connected to ap SSID:%s password:%s",
-			 EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+			 CONFIG_ESP_WIFI_SSID, CONFIG_ESP_WIFI_PASSWORD);
 	} else if (bits & WIFI_FAIL_BIT) {
 		ESP_LOGE(TAG, "Failed to connect to SSID:%s, password:%s",
-			 EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+			 CONFIG_ESP_WIFI_SSID, CONFIG_ESP_WIFI_PASSWORD);
 		ret_value = ESP_FAIL;
 	} else {
 		ESP_LOGE(TAG, "UNEXPECTED EVENT");
@@ -153,18 +142,18 @@ esp_err_t wifi_init_sta()
 	}
 
 	ESP_LOGI(TAG, "wifi_init_sta finished.");
-	ESP_LOGI(TAG, "connect to ap SSID:%s", EXAMPLE_ESP_WIFI_SSID);
+	ESP_LOGI(TAG, "connect to ap SSID:%s", CONFIG_ESP_WIFI_SSID);
 	vEventGroupDelete(s_wifi_event_group); 
 	return ret_value; 
 }
 
 
 #if CONFIG_SPIFFS 
-esp_err_t mountSPIFFS(char * partition_label, char * base_path) {
+esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
 	ESP_LOGI(TAG, "Initializing SPIFFS file system");
 
 	esp_vfs_spiffs_conf_t conf = {
-	  .base_path = base_path,
+	  .base_path = mount_point,
 	  .partition_label = partition_label,
 	  .max_files = 5,
 	  .format_if_mount_failed = true
@@ -191,14 +180,15 @@ esp_err_t mountSPIFFS(char * partition_label, char * base_path) {
 		ESP_LOGE(TAG, "Failed to get SPIFFS partition information (%s)", esp_err_to_name(ret));
 	} else {
 		ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+		ESP_LOGI(TAG, "Mount SPIFFS filesystem on %s", mount_point);
 	}
-	ESP_LOGI(TAG, "Mount SPIFFS filesystem");
+	//ESP_LOGI(TAG, "Mount SPIFFS filesystem");
 	return ret;
 }
 #endif
 
 #if CONFIG_FATFS
-wl_handle_t mountFATFS(char * partition_label, char * base_path) {
+wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 	ESP_LOGI(TAG, "Initializing FAT file system");
 	// To mount device we need name of device partition, define base_path
 	// and allow format partition in case if it is new one and was not formated before
@@ -208,19 +198,38 @@ wl_handle_t mountFATFS(char * partition_label, char * base_path) {
 		.allocation_unit_size = CONFIG_WL_SECTOR_SIZE
 	};
 	wl_handle_t s_wl_handle;
-	esp_err_t err = esp_vfs_fat_spiflash_mount(base_path, partition_label, &mount_config, &s_wl_handle);
+	esp_err_t err = esp_vfs_fat_spiflash_mount(mount_point, partition_label, &mount_config, &s_wl_handle);
 	if (err != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to mount FATFS (%s)", esp_err_to_name(err));
 		return -1;
 	}
-	ESP_LOGI(TAG, "Mount FAT filesystem");
+	ESP_LOGI(TAG, "Mount FAT filesystem on %s", mount_point);
 	ESP_LOGI(TAG, "s_wl_handle=%d",s_wl_handle);
 	return s_wl_handle;
 }
 #endif
 
+
+#ifdef CONFIG_IDF_TARGET_ESP32S2
+// on ESP32-S2, DMA channel must be the same as host id
+#define SPI_DMA_CHAN	host.slot
+#else
+// on ESP32, DMA channel to be used by the SPI peripheral
+#define SPI_DMA_CHAN	1
+#endif
+
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
-esp_err_t mountSDCARD(char * base_path) {
+esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
+	esp_err_t ret;
+	// Options for mounting the filesystem.
+	// If format_if_mount_failed is set to true, SD card will be partitioned and
+	// formatted in case when mounting fails.
+	esp_vfs_fat_sdmmc_mount_config_t mount_config = {
+		.format_if_mount_failed = true,
+		.max_files = 5,
+		.allocation_unit_size = 16 * 1024
+	};
+	//sdmmc_card_t* card;
 
 #if CONFIG_MMC_SDCARD
 	ESP_LOGI(TAG, "Initializing SDMMC peripheral");
@@ -241,35 +250,32 @@ esp_err_t mountSDCARD(char * base_path) {
 	gpio_set_pull_mode(4, GPIO_PULLUP_ONLY);	// D1, needed in 4-line mode only
 	gpio_set_pull_mode(12, GPIO_PULLUP_ONLY);	// D2, needed in 4-line mode only
 	gpio_set_pull_mode(13, GPIO_PULLUP_ONLY);	// D3, needed in 4- and 1-line modes
-#endif
 
-#if CONFIG_SPI_SDCARD
+	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
+#else
 	ESP_LOGI(TAG, "Initializing SPI peripheral");
 	sdmmc_host_t host = SDSPI_HOST_DEFAULT();
-	sdspi_slot_config_t slot_config = SDSPI_SLOT_CONFIG_DEFAULT();
-	slot_config.gpio_miso = PIN_NUM_MISO;
-	slot_config.gpio_mosi = PIN_NUM_MOSI;
-	slot_config.gpio_sck  = PIN_NUM_CLK;
-	slot_config.gpio_cs   = PIN_NUM_CS;
+	spi_bus_config_t bus_cfg = {
+		.mosi_io_num = PIN_NUM_MOSI,
+		.miso_io_num = PIN_NUM_MISO,
+		.sclk_io_num = PIN_NUM_CLK,
+		.quadwp_io_num = -1,
+		.quadhd_io_num = -1,
+		.max_transfer_sz = 4000,
+	};
+	ret = spi_bus_initialize(host.slot, &bus_cfg, SPI_DMA_CHAN);
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to initialize bus.");
+		return ret;
+	}
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
+	sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
+	slot_config.gpio_cs = PIN_NUM_CS;
+	slot_config.host_id = host.slot;
+
+	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
 #endif
-
-	// Options for mounting the filesystem.
-	// If format_if_mount_failed is set to true, SD card will be partitioned and
-	// formatted in case when mounting fails.
-	esp_vfs_fat_sdmmc_mount_config_t mount_config = {
-		.format_if_mount_failed = false,
-		.max_files = 5,
-		.allocation_unit_size = 16 * 1024
-	};
-
-	// Use settings defined above to initialize SD card and mount FAT filesystem.
-	// Note: esp_vfs_fat_sdmmc_mount is an all-in-one convenience function.
-	// Please check its source code and implement error recovery when developing
-	// production applications.
-	sdmmc_card_t* card;
-	esp_err_t ret = esp_vfs_fat_sdmmc_mount(base_path, &host, &slot_config, &mount_config, &card);
 
 	if (ret != ESP_OK) {
 		if (ret == ESP_FAIL) {
@@ -284,7 +290,7 @@ esp_err_t mountSDCARD(char * base_path) {
 
 	// Card has been initialized, print its properties
 	sdmmc_card_print_info(stdout, card);
-	ESP_LOGI(TAG, "Mounte SD card");
+	ESP_LOGI(TAG, "Mounte SD card on %s", mount_point);
 	return ret;
 }
 #endif
@@ -308,37 +314,35 @@ void app_main(void)
 
 #if CONFIG_SPIFFS 
 	char *partition_label = "storage0";
-	char *base_path = "/spiffs"; 
-	ret = mountSPIFFS(partition_label, base_path);
+	ret = mountSPIFFS(partition_label, MOUNT_POINT);
 	if (ret != ESP_OK) return;
 #endif
 
 #if CONFIG_FATFS
 	char *partition_label = "storage1";
-	char *base_path = "/spiflash";
-	wl_handle_t s_wl_handle = mountFATFS(partition_label, base_path);
+	wl_handle_t s_wl_handle = mountFATFS(partition_label, MOUNT_POINT);
 	if (s_wl_handle < 0) return;
 #endif 
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
-	char *base_path = "/sdcard";
-	ret = mountSDCARD(base_path);
+	sdmmc_card_t card;
+	ret = mountSDCARD(MOUNT_POINT, &card);
 	if (ret != ESP_OK) return;
 #endif 
 
 	char srcFileName[64];
 	char dstFileName[64];
 	char outFileName[64];
-	sprintf(srcFileName, "%s/hello.txt", base_path);
+	sprintf(srcFileName, "%s/hello.txt", MOUNT_POINT);
 	sprintf(dstFileName, "hello.txt");
-	sprintf(outFileName, "%s/out.txt", base_path);
+	sprintf(outFileName, "%s/out.txt", MOUNT_POINT);
 
 	// Open FTP server
-	ESP_LOGI(TAG, "ftp server:%s", EXAMPLE_FTP_SERVER);
-	ESP_LOGI(TAG, "ftp user  :%s", EXAMPLE_FTP_USER);
+	ESP_LOGI(TAG, "ftp server:%s", CONFIG_FTP_SERVER);
+	ESP_LOGI(TAG, "ftp user  :%s", CONFIG_FTP_USER);
 	static NetBuf_t* ftpClientNetBuf = NULL;
 	FtpClient* ftpClient = getFtpClient();
-	int connect = ftpClient->ftpClientConnect(EXAMPLE_FTP_SERVER, 21, &ftpClientNetBuf);
+	int connect = ftpClient->ftpClientConnect(CONFIG_FTP_SERVER, 21, &ftpClientNetBuf);
 	ESP_LOGI(TAG, "connect=%d", connect);
 	if (connect == 0) {
 		ESP_LOGE(TAG, "FTP server connect fail");
@@ -346,7 +350,7 @@ void app_main(void)
 	}
 
 	// Login FTP server
-	int login = ftpClient->ftpClientLogin(EXAMPLE_FTP_USER, EXAMPLE_FTP_PASSWORD, ftpClientNetBuf);
+	int login = ftpClient->ftpClientLogin(CONFIG_FTP_USER, CONFIG_FTP_PASSWORD, ftpClientNetBuf);
 	ESP_LOGI(TAG, "login=%d", login);
 	if (login == 0) {
 		ESP_LOGE(TAG, "FTP server login fail");
@@ -368,6 +372,7 @@ void app_main(void)
 		ESP_LOGI(TAG, "%s", line);
 	}
 	fclose(f);
+	ESP_LOGI(TAG, "");
 
 	// Use POSIX and C standard library functions to work with files.
 	// Create file
@@ -378,22 +383,22 @@ void app_main(void)
 	}
 	fprintf(f, "Hello World!\n");
 	fclose(f);
-	ESP_LOGI(TAG, "File written");
+	ESP_LOGI(TAG, "Wrote the text on %s", srcFileName);
 
-	// Put to FTP server
+	// Put file to FTP server
 	ftpClient->ftpClientPut(srcFileName, dstFileName, FTP_CLIENT_TEXT, ftpClientNetBuf);
 	ESP_LOGI(TAG, "ftpClientPut %s ---> %s", srcFileName, dstFileName);
 
 	// Delete file
 	unlink(srcFileName);
-	ESP_LOGI(TAG, "File removed");
+	ESP_LOGI(TAG, "Deleted %s", srcFileName);
 
-	// Get from FTP server
+	// Get file from FTP server
 	ftpClient->ftpClientGet(srcFileName, dstFileName, FTP_CLIENT_TEXT, ftpClientNetBuf);
 	ESP_LOGI(TAG, "ftpClientGet %s <--- %s", srcFileName, dstFileName);
 
 	// Open file for reading
-	ESP_LOGI(TAG, "Reading file");
+	ESP_LOGI(TAG, "Open %s", srcFileName);
 	f = fopen(srcFileName, "r");
 	if (f == NULL) {
 		ESP_LOGE(TAG, "Failed to open file for reading");
@@ -406,7 +411,7 @@ void app_main(void)
 	if (pos) {
 		*pos = '\0';
 	}
-	ESP_LOGI(TAG, "Read from file: '%s'", line);
+	ESP_LOGI(TAG, "Read from %s: '%s'", srcFileName, line);
 
 	ftpClient->ftpClientQuit(ftpClientNetBuf);
 
@@ -416,12 +421,13 @@ void app_main(void)
 #endif
 
 #if CONFIG_FATFS
-	esp_vfs_fat_spiflash_unmount(base_path, s_wl_handle);
+	esp_vfs_fat_spiflash_unmount(MOUNT_POINT, s_wl_handle);
 	ESP_LOGI(TAG, "FATFS unmounted");
 #endif 
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
-	esp_vfs_fat_sdmmc_unmount();
+	esp_vfs_fat_sdcard_unmount(MOUNT_POINT, &card);
 	ESP_LOGI(TAG, "SDCARD unmounted");
 #endif 
+
 }
