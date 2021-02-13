@@ -55,20 +55,20 @@ __Must be formatted with FAT32 before use__
 
 |ESP32 pin|SPI pin|Notes|
 |:-:|:-:|:-:|
-|GPIO14|SCK||10k pull up if can't mount|
+|GPIO14|SCK|10k pull up if can't mount|
 |GPIO15|MOSI|10k pull up if can't mount|
-|GPIO2|MISO||10k pull up if can't mount|
-|GPIO13|CS||10k pull up if can't mount|
-|3.3V|VCC|Can't use 5V supply|
+|GPIO2|MISO|10k pull up if can't mount|
+|GPIO13|CS|10k pull up if can't mount|
+|3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
 |ESP32-S2 pin|SPI pin|Notes|
 |:-:|:-:|:-:|
-|GPIO14|SCK||10k pull up if can't mount|
-|GPIO15|MOSI|10k pull up if can't mount|
-|GPIO2|MISO||10k pull up if can't mount|
-|GPIO13|CS||10k pull up if can't mount|
-|3.3V|VCC|Can't use 5V supply|
+|GPIO14|SCK|10k pull up if can't mount|
+|GPIO15|MOSI10k pull up if can't mount|
+|GPIO2|MISO|10k pull up if can't mount|
+|GPIO13|CS|10k pull up if can't mount|
+|3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
 # Using FAT file system on SDMMC peripheral SDCARD
@@ -84,6 +84,8 @@ __Must be formatted with FAT32 before use__
 |GPIO13|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
 |N/C|CD|optional, not used in the example|
 |N/C|WP|optional, not used in the example|
+|3.3V|VCC|Don't use 5V supply|
+|GND|GND||
 
 |ESP32-S2 pin|SD card pin|Notes|
 |:-:|:-:|:-:|
@@ -93,6 +95,8 @@ __Must be formatted with FAT32 before use__
 |GPIO13|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
 |N/C|CD|optional, not used in the example|
 |N/C|WP|optional, not used in the example|
+|3.3V|VCC|Don't use 5V supply|
+|GND|GND||
 
 Note: that ESP32-S2 doesn't include SD Host peripheral and only supports SD over SPI. Therefore only SCK, MOSI, MISO, CS and ground pins need to be connected.
 
