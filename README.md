@@ -54,7 +54,7 @@ You can select any one using menuconfig.
 __Must be formatted with FAT32 before use__
 
 |ESP32 pin|SPI pin|Notes|
-|:-:|:-:|:-:|
+|:-:|:-:|:--|
 |GPIO14|SCK|10k pull up if can't mount|
 |GPIO15|MOSI|10k pull up if can't mount|
 |GPIO2|MISO|10k pull up if can't mount|
@@ -65,7 +65,7 @@ __Must be formatted with FAT32 before use__
 |GND|GND||
 
 |ESP32-S2 pin|SPI pin|Notes|
-|:-:|:-:|:-:|
+|:-:|:-:|:--|
 |GPIO14|SCK|10k pull up if can't mount|
 |GPIO15|MOSI|10k pull up if can't mount|
 |GPIO2|MISO|10k pull up if can't mount|
