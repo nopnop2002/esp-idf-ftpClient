@@ -23,6 +23,10 @@ menu "FTP Client Configuration"
 			bool "FAT File System on MMC SDCARD"
 			help
 				Use FAT File System on MMC SDCARD.
+		config EXT_FLASH
+			bool "FAT File System on External Flash"
+			help
+				Use FAT File System on External Flash.
 	endchoice
 
 	comment "for WiFi Setting"

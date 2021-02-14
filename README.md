@@ -47,8 +47,9 @@ You can select any one using menuconfig.
 - FAT file system on FLASH   
 - FAT file system on SPI peripheral SDCARD   
 - FAT file system on SDMMC peripheral SDCARD   
+- FAT file system on External Flash like Winbond W25Q64    
 
-![config-app-2](https://user-images.githubusercontent.com/6020549/107837353-d399ae00-6de3-11eb-8aa5-ff4d7570191c.jpg)
+![config-app-2](https://user-images.githubusercontent.com/6020549/107871813-4429f300-6ee8-11eb-9f8e-9970df06f82f.jpg)
 
 # Using FAT file system on SPI peripheral SDCARD
 __Must be formatted with FAT32 before use__
@@ -62,14 +63,7 @@ __Must be formatted with FAT32 before use__
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
-|ESP32-S2 pin|SPI pin|Notes|
-|:-:|:-:|:--|
-|GPIO14|SCK|10k pull up if can't mount|
-|GPIO15|MOSI|10k pull up if can't mount|
-|GPIO2|MISO|10k pull up if can't mount|
-|GPIO13|CS|10k pull up if can't mount|
-|3.3V|VCC|Don't use 5V supply|
-|GND|GND||
+Note: ESP32-S2 is same as ESP32.   
 
 Note: This example doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.
 
@@ -115,6 +109,47 @@ When adding a pullup to this pin for SD card operation, consider the following:
 - On boards which use the internal regulator and a 3.3V flash chip, GPIO12 must be low at reset. This is incompatible with SD card operation.
     * In most cases, external pullup can be omitted and an internal pullup can be enabled using a `gpio_pullup_en(GPIO_NUM_12);` call. Most SD cards work fine when an internal pullup on GPIO12 line is enabled. Note that if ESP32 experiences a power-on reset while the SD card is sending data, high level on GPIO12 can be latched into the bootstrapping register, and ESP32 will enter a boot loop until external reset with correct GPIO12 level is applied.
     * Another option is to burn the flash voltage selection efuses. This will permanently select 3.3V output voltage for the internal regulator, and GPIO12 will not be used as a bootstrapping pin. Then it is safe to connect a pullup resistor to GPIO12. This option is suggested for production use.
+
+# Using FAT file system on External Flash
+I tested these flash.   
+https://github.com/nopnop2002/esp-idf-w25q64
+
+|ESP32 pin|SPI Flash pin|
+|:-:|:-:|
+|GPIO23|MOSI|
+|GPIO19|MISO|
+|GPIO18|SCK|
+|GPIO5|CS|
+|3.3V|/WP|
+|3.3V|/HOLD|
+|3.3V|VCC|
+|GND|GND|
+
+Note: ESP32-S2 is same as ESP32.   
+
+Note: The first time you use it, you will always get an error. It works fine after a few resets.   
+
+- First time   
+```
+I (2121) FTP: Initializing external SPI Flash
+I (2121) FTP: Pin assignments:
+I (2121) FTP: MOSI: 23   MISO: 19   SCLK: 18   CS:  5
+E (2131) memspi: no response
+E (2131) FTP: Failed to initialize external Flash: ESP_ERR_INVALID_RESPONSE (0x108)
+```
+
+- After reset   
+```
+I (1621) FTP: Initializing external SPI Flash
+I (1621) FTP: Pin assignments:
+I (1631) FTP: MOSI: 23   MISO: 19   SCLK: 18   CS:  5
+I (1631) spi_flash: detected chip: winbond
+I (1641) spi_flash: flash io: dio
+I (1641) FTP: Initialized external Flash, size=8192 KB, ID=0xef4017
+I (1651) FTP: Adding external Flash as a partition, label="storage", size=8192 KB
+I (1661) FTP: Initializing FAT file system
+I (1661) FTP: Mount FAT filesystem on /root
+```
 
 # Screen Shot   
 ![ScrrenShot](https://user-images.githubusercontent.com/6020549/107837485-5f133f00-6de4-11eb-9fe8-775443c6836d.jpg)

@@ -26,8 +26,10 @@
 #include "sdmmc_cmd.h"
 #include "esp_spiffs.h" 
 
-#include "lwip/err.h"
-#include "lwip/sys.h"
+// External Flash Stuff
+#include "esp_flash.h"
+#include "esp_flash_spi_init.h"
+#include "esp_partition.h"
 
 #include "FtpClient.h"
 
@@ -39,6 +41,7 @@ static char *MOUNT_POINT = "/root";
 //#define CONFIG_FATFS	1
 //#define CONFIG_SPI_SDCARD  1
 //#define CONFIG_MMC_SDCARD  1
+//#define CONFIG_EXT_FLASH   1
 
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
@@ -147,6 +150,63 @@ esp_err_t wifi_init_sta()
 	return ret_value; 
 }
 
+#if CONFIG_EXT_FLASH
+static esp_flash_t* init_ext_flash(void)
+{
+	const spi_bus_config_t bus_config = {
+		.mosi_io_num = VSPI_IOMUX_PIN_NUM_MOSI,
+		.miso_io_num = VSPI_IOMUX_PIN_NUM_MISO,
+		.sclk_io_num = VSPI_IOMUX_PIN_NUM_CLK,
+		.quadwp_io_num = -1,
+		.quadhd_io_num = -1,
+	};
+
+	const esp_flash_spi_device_config_t device_config = {
+		.host_id = VSPI_HOST,
+		.cs_id = 0,
+		.cs_io_num = VSPI_IOMUX_PIN_NUM_CS,
+		.io_mode = SPI_FLASH_DIO,
+		.speed = ESP_FLASH_40MHZ
+	};
+
+	ESP_LOGI(TAG, "Initializing external SPI Flash");
+	ESP_LOGI(TAG, "Pin assignments:");
+	ESP_LOGI(TAG, "MOSI: %2d   MISO: %2d   SCLK: %2d   CS: %2d",
+		bus_config.mosi_io_num, bus_config.miso_io_num,
+		bus_config.sclk_io_num, device_config.cs_io_num
+	);
+
+	// Initialize the SPI bus
+	ESP_ERROR_CHECK(spi_bus_initialize(VSPI_HOST, &bus_config, 1));
+
+	// Add device to the SPI bus
+	esp_flash_t* ext_flash;
+	ESP_ERROR_CHECK(spi_bus_add_flash_device(&ext_flash, &device_config));
+
+	// Probe the Flash chip and initialize it
+	esp_err_t err = esp_flash_init(ext_flash);
+	if (err != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to initialize external Flash: %s (0x%x)", esp_err_to_name(err), err);
+		return NULL;
+	}
+
+	// Print out the ID and size
+	uint32_t id;
+	ESP_ERROR_CHECK(esp_flash_read_id(ext_flash, &id));
+	ESP_LOGI(TAG, "Initialized external Flash, size=%d KB, ID=0x%x", ext_flash->size / 1024, id);
+
+	return ext_flash;
+}
+
+static const esp_partition_t* add_partition(esp_flash_t* ext_flash, const char* partition_label)
+{
+	ESP_LOGI(TAG, "Adding external Flash as a partition, label=\"%s\", size=%d KB", partition_label, ext_flash->size / 1024);
+	const esp_partition_t* fat_partition;
+	ESP_ERROR_CHECK(esp_partition_register_external(ext_flash, 0, ext_flash->size, partition_label, ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_FAT, &fat_partition));
+	return fat_partition;
+}
+
+#endif
 
 #if CONFIG_SPIFFS 
 esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
@@ -187,7 +247,7 @@ esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
 }
 #endif
 
-#if CONFIG_FATFS
+#if CONFIG_FATFS || CONFIG_EXT_FLASH
 wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 	ESP_LOGI(TAG, "Initializing FAT file system");
 	// To mount device we need name of device partition, define base_path
@@ -329,6 +389,17 @@ void app_main(void)
 	ret = mountSDCARD(MOUNT_POINT, &card);
 	if (ret != ESP_OK) return;
 #endif 
+
+#if CONFIG_EXT_FLASH
+	// Set up SPI bus and initialize the external SPI Flash chip
+	esp_flash_t* flash = init_ext_flash();
+	if (flash == NULL) return;
+	// Add the entire external flash chip as a partition
+	char *partition_label = "storage";
+	add_partition(flash, partition_label);
+	wl_handle_t s_wl_handle = mountFATFS(partition_label, MOUNT_POINT);
+	if (s_wl_handle < 0) return;
+#endif
 
 	char srcFileName[64];
 	char dstFileName[64];
