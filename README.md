@@ -125,7 +125,7 @@ https://github.com/nopnop2002/esp-idf-w25q64
 |3.3V||VCC|
 |GND||GND|
 
-Note: ESP32-S2 is same as ESP32.   
+Note: ESP32-S2 is NOT support this function.   
 
 Note: The first time you use it, you will always get an error. It works fine after a few resets.   
 
