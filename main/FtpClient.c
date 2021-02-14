@@ -792,7 +792,12 @@ static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl
 	if (sin.sin_addr.s_addr == 0xffffffff) {
 		struct hostent *hp;
 		hp = gethostbyname(host);
-		if (hp == NULL) return 9;
+		if (hp == NULL) {
+			#if FTP_CLIENT_DEBUG
+			perror("FTP Client Error: Connect, gethostbyname");
+			#endif
+			return 0;
+		}
 		struct ip4_addr *ip4_addr;
 		ip4_addr = (struct ip4_addr *)hp->h_addr;
 		sin.sin_addr.s_addr = ip4_addr->addr;
