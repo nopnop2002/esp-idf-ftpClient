@@ -128,8 +128,6 @@ https://github.com/nopnop2002/esp-idf-w25q64
 Note: ESP32-S2 is NOT support this function.   
 
 Note: You will get an error. It works fine after a few resets. At the moment, it is not stable.   
-
-- First time   
 ```
 I (2121) FTP: Initializing external SPI Flash
 I (2121) FTP: Pin assignments:
@@ -138,7 +136,7 @@ E (2131) memspi: no response
 E (2131) FTP: Failed to initialize external Flash: ESP_ERR_INVALID_RESPONSE (0x108)
 ```
 
-- After reset   
+After reset   
 ```
 I (1621) FTP: Initializing external SPI Flash
 I (1621) FTP: Pin assignments:
