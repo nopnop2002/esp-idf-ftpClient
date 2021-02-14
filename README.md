@@ -114,16 +114,16 @@ When adding a pullup to this pin for SD card operation, consider the following:
 I tested these flash.   
 https://github.com/nopnop2002/esp-idf-w25q64
 
-|ESP32 pin|SPI Flash pin|
-|:-:|:-:|
-|GPIO23|MOSI|
-|GPIO19|MISO|
-|GPIO18|SCK|
-|GPIO5|CS|
-|3.3V|/WP|
-|3.3V|/HOLD|
-|3.3V|VCC|
-|GND|GND|
+|ESP32 pin|SPI bus signal|SPI Flash pin|
+|:-:|:-:|:-:|
+|GPIO23|MOSI|DI|
+|GPIO19|MISO|DO|
+|GPIO18|SCK|CLK|
+|GPIO5|CS|CMD|
+|3.3V||/WP|
+|3.3V||/HOLD|
+|3.3V||VCC|
+|GND||GND|
 
 Note: ESP32-S2 is same as ESP32.   
 
