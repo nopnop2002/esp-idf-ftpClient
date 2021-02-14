@@ -30,6 +30,10 @@
 #include <sys/unistd.h>
 #include "FtpClient.h"
 
+#include "netdb.h"
+
+#include "esp_log.h"
+
 #if !defined FTP_CLIENT_DEFAULT_MODE
 #define FTP_CLIENT_DEFAULT_MODE			FTP_CLIENT_PASSIVE
 #endif
@@ -110,6 +114,9 @@ static int accessFtpClient(const char* path, int typ, int mode, NetBuf_t* nContr
 static int readFtpClient(void* buf, int max, NetBuf_t* nData);
 static int writeFtpClient(const void* buf, int len, NetBuf_t* nData);
 static int closeFtpClient(NetBuf_t* nData);
+
+
+static const char *TAG = "FTP";
 
 
 /*
@@ -775,12 +782,24 @@ static int clearCallbackFtpClient(NetBuf_t* nControl)
  */
 static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl)
 {
+	ESP_LOGD(TAG, "connectFtpClient");
 	struct sockaddr_in sin;
 	memset(&sin,0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 	sin.sin_addr.s_addr = inet_addr(host);
+	ESP_LOGD(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+	if (sin.sin_addr.s_addr == 0xffffffff) {
+		struct hostent *hp;
+		hp = gethostbyname(host);
+		if (hp == NULL) return 9;
+		struct ip4_addr *ip4_addr;
+		ip4_addr = (struct ip4_addr *)hp->h_addr;
+		sin.sin_addr.s_addr = ip4_addr->addr;
+	}
+
 	int sControl = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+	ESP_LOGD(TAG, "sControl=%d", sControl);
 	if (sControl == -1) {
 		#if FTP_CLIENT_DEBUG
 		perror("FTP Client Error: Connect, socket");
