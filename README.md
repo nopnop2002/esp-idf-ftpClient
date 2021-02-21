@@ -150,6 +150,8 @@ I (1661) FTP: Mount FAT filesystem on /root
 ```
 
 # API
+Based on ftplib V4.0-1.   
+You can use [working documentation of ftplib](https://nbpfaus.net/~pfau/ftplib/ftplib.html).   
 
 ## Server Connection
 - ftpClientConnect() - Connect to a remote server
