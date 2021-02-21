@@ -152,7 +152,7 @@ I (1661) FTP: Mount FAT filesystem on /root
 # API
 
 ## Server Connection
-- ftpClientConnect() - Connect to a remote server
+- ftpClientConnect() - Connect to a remote server   
  (*ftpClientConnect)(const char* host, uint16_t port, NetBuf_t** nControl);
 - ftpClientLogin() - Login to remote machine
 - ftpClientQuit() - Disconnect from remote server
