@@ -149,6 +149,37 @@ I (1661) FTP: Initializing FAT file system
 I (1661) FTP: Mount FAT filesystem on /root
 ```
 
+# API
+
+## Server Connection
+- ftpClientConnect() - Connect to a remote server
+- ftpClientLogin() - Login to remote machine
+- ftpClientQuit() - Disconnect from remote server
+- ftpClientSetOptions() - Set Connection Options
+
+## Directory Functions
+- ftpClientChangeDir() - Change working directory
+- ftpClientMakeDir() - Create a directory
+- ftpClientRemoveDir() - Remove a directory
+- ftpClientDir() - List a remote directory
+- ftpClientNlst() - List a remote directory
+- ftpClientChangeDirUp() - Change to parent directory
+- ftpClientPwd() - Determine current working directory
+
+## File to File Transfer
+- ftpClientGet() - Retreive a remote file
+- ftpClientPut() - Send a local file to remote
+- ftpClientDelete() - Delete a remote file
+- ftpClientRename() - Rename a remote file
+
+## File to Program Transfer
+These routines allow programs access to the data streams connected to remote files and directories.   
+- ftpClientAccess() - Open a remote file or directory
+- ftpClientRead() - Read from remote file or directory
+- ftpClientWrite() - Write to remote file
+- ftpClientClose() - Close data connection
+
+
 # Screen Shot   
 ![ScrrenShot](https://user-images.githubusercontent.com/6020549/107837485-5f133f00-6de4-11eb-9fe8-775443c6836d.jpg)
 - Get remote file list   
