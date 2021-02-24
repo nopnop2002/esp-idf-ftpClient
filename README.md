@@ -190,3 +190,9 @@ These routines allow programs access to the data streams connected to remote fil
 - Remove local file   
 - Get file from sever   
 - Read local file   
+
+# Reference   
+FTP Server using FAT File system.   
+Since it uses the FAT file system instead of SPIFFS, directory operations are possible.   
+https://github.com/nopnop2002/esp-idf-ftpServer   
+
