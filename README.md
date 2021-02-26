@@ -111,7 +111,7 @@ When adding a pullup to this pin for SD card operation, consider the following:
     * Another option is to burn the flash voltage selection efuses. This will permanently select 3.3V output voltage for the internal regulator, and GPIO12 will not be used as a bootstrapping pin. Then it is safe to connect a pullup resistor to GPIO12. This option is suggested for production use.
 
 # Using FAT file system on External Flash
-I tested these flash.   
+I tested these External Flash.   
 https://github.com/nopnop2002/esp-idf-w25q64
 
 |ESP32 pin|SPI bus signal|SPI Flash pin|
