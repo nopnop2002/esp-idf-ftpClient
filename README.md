@@ -1,6 +1,6 @@
 # esp-idf-ftpClient
 FTP Client for esp-idf.   
-I ported from [here](https://github.com/JohnnyB1290/ESP32-FTP-Client).   
+This project use [ESP32-FTP-Client](https://github.com/JohnnyB1290/ESP32-FTP-Client).   
 
 # Installation for ESP32
 ```
@@ -12,7 +12,6 @@ idf.py flash
 ```
 
 # Installation for ESP32-S2
-
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
 cd esp-idf-ftpClient/
