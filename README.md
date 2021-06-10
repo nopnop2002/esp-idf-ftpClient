@@ -191,7 +191,14 @@ These routines allow programs access to the data streams connected to remote fil
 - Read local file   
 
 # Reference   
-FTP Server using FAT File system.   
+
+- FTP Server using FAT File system.   
 Since it uses the FAT file system instead of SPIFFS, directory operations are possible.   
 https://github.com/nopnop2002/esp-idf-ftpServer   
+
+- File copy using scp.   
+https://github.com/nopnop2002/esp-idf-scp-client
+
+- File copy using smb(samba client).   
+https://github.com/nopnop2002/esp-idf-smb-client
 
