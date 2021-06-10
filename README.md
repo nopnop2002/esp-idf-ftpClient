@@ -199,6 +199,6 @@ https://github.com/nopnop2002/esp-idf-ftpServer
 - File copy using scp.   
 https://github.com/nopnop2002/esp-idf-scp-client
 
-- File copy using smb(samba client).   
+- File copy using smb.   
 https://github.com/nopnop2002/esp-idf-smb-client
 
