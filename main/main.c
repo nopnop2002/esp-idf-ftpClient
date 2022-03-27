@@ -1,9 +1,9 @@
 /* FTP Client example.
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
+	 This example code is in the Public Domain (or CC0 licensed, at your option.)
 
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
+	 Unless required by applicable law or agreed to in writing, this
+	 software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+	 CONDITIONS OF ANY KIND, either express or implied.
 */
 
 #include <stdio.h>
@@ -41,7 +41,7 @@ static char *MOUNT_POINT = "/root";
 //#define CONFIG_FATFS	1
 //#define CONFIG_SPI_SDCARD  1
 //#define CONFIG_MMC_SDCARD  1
-//#define CONFIG_EXT_FLASH   1
+//#define CONFIG_EXT_FLASH	 1
 
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
@@ -50,7 +50,7 @@ static EventGroupHandle_t s_wifi_event_group;
  * - we are connected to the AP with an IP
  * - we failed to connect after the maximum amount of retries */
 #define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT	   BIT1
+#define WIFI_FAIL_BIT		 BIT1
 
 #if CONFIG_SPI_SDCARD
 // Pin mapping when using SPI mode.
@@ -92,17 +92,20 @@ esp_err_t wifi_init_sta()
 	esp_err_t ret_value = ESP_OK;
 	s_wifi_event_group = xEventGroupCreate();
 
-#if ESP_IDF_VERSION_MAJOR >= 4 && ESP_IDF_VERSION_MINOR >= 1 
+	ESP_LOGI(TAG,"ESP-IDF Ver%d.%d", ESP_IDF_VERSION_MAJOR, ESP_IDF_VERSION_MINOR);
+	ESP_LOGI(TAG,"ESP_IDF_VERSION %d", ESP_IDF_VERSION);
+
+//#if ESP_IDF_VERSION_MAJOR >= 4 && ESP_IDF_VERSION_MINOR >= 1 
+#if ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 1, 0)
 	ESP_LOGI(TAG,"ESP-IDF Ver4.1");
 	ESP_ERROR_CHECK(esp_netif_init());
-
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 	esp_netif_create_default_wifi_sta();
 #else
-	ESP_LOGI(TAG,"ESP-IDF Ver4.0");
-	tcpip_adapter_init();
-
-	ESP_ERROR_CHECK(esp_event_loop_create_default());
+	ESP_LOGE(TAG,"esp-idf version 4.1 or higher required");
+	while(1) {
+		vTaskDelay(1);
+	}
 #endif
 
 	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
@@ -171,7 +174,7 @@ static esp_flash_t* init_ext_flash(void)
 
 	ESP_LOGI(TAG, "Initializing external SPI Flash");
 	ESP_LOGI(TAG, "Pin assignments:");
-	ESP_LOGI(TAG, "MOSI: %2d   MISO: %2d   SCLK: %2d   CS: %2d",
+	ESP_LOGI(TAG, "MOSI: %2d MISO: %2d SCLK: %2d CS: %2d",
 		bus_config.mosi_io_num, bus_config.miso_io_num,
 		bus_config.sclk_io_num, device_config.cs_io_num
 	);
@@ -213,10 +216,10 @@ esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
 	ESP_LOGI(TAG, "Initializing SPIFFS file system");
 
 	esp_vfs_spiffs_conf_t conf = {
-	  .base_path = mount_point,
-	  .partition_label = partition_label,
-	  .max_files = 5,
-	  .format_if_mount_failed = true
+		.base_path = mount_point,
+		.partition_label = partition_label,
+		.max_files = 5,
+		.format_if_mount_failed = true
 	};
 
 	// Use settings defined above to initialize and mount SPIFFS filesystem.
@@ -361,8 +364,8 @@ void app_main(void)
 	esp_err_t ret;
 	ret = nvs_flash_init();
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-	  ESP_ERROR_CHECK(nvs_flash_erase());
-	  ret = nvs_flash_init();
+		ESP_ERROR_CHECK(nvs_flash_erase());
+		ret = nvs_flash_init();
 	}
 	ESP_ERROR_CHECK(ret);
 
