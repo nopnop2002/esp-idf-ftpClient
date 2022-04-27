@@ -38,7 +38,7 @@ menu "FTP Client Configuration"
 					Use FAT File System on External Flash.
 		endchoice
 
-		config EXAMPLE_PIN_MOSI
+		config SDSPI_MOSI
 			depends on SPI_SDCARD
 			int "MOSI GPIO number"
 			range 0 GPIO_RANGE_MAX
@@ -47,7 +47,7 @@ menu "FTP Client Configuration"
 			default 35 if IDF_TARGET_ESP32S3
 			default 4  # C3 and others
 
-		config EXAMPLE_PIN_MISO
+		config SDSPI_MISO
 			depends on SPI_SDCARD
 			int "MISO GPIO number"
 			range 0 GPIO_RANGE_MAX
@@ -56,7 +56,7 @@ menu "FTP Client Configuration"
 			default 37 if IDF_TARGET_ESP32S3
 			default 6  # C3 and others
 
-		config EXAMPLE_PIN_CLK
+		config SDSPI_CLK
 			depends on SPI_SDCARD
 			int "CLK GPIO number"
 			range 0 GPIO_RANGE_MAX
@@ -65,7 +65,7 @@ menu "FTP Client Configuration"
 			default 36 if IDF_TARGET_ESP32S3
 			default 5  # C3 and others
 
-		config EXAMPLE_PIN_CS
+		config SDSPI_CS
 			depends on SPI_SDCARD
 			int "CS GPIO number"
 			range 0 GPIO_RANGE_MAX

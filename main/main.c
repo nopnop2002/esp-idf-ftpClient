@@ -299,16 +299,16 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
 #else
 	ESP_LOGI(TAG, "Initializing SPI peripheral");
-	ESP_LOGI(TAG, "EXAMPLE_PIN_MOSI=%d", CONFIG_EXAMPLE_PIN_MOSI);
-	ESP_LOGI(TAG, "EXAMPLE_PIN_MISO=%d", CONFIG_EXAMPLE_PIN_MISO);
-	ESP_LOGI(TAG, "EXAMPLE_PIN_CLK=%d", CONFIG_EXAMPLE_PIN_CLK);
-	ESP_LOGI(TAG, "EXAMPLE_PIN_CS=%d", CONFIG_EXAMPLE_PIN_CS);
+	ESP_LOGI(TAG, "SDSPI_MOSI=%d", CONFIG_SDSPI_MOSI);
+	ESP_LOGI(TAG, "SDSPI_MISO=%d", CONFIG_SDSPI_MISO);
+	ESP_LOGI(TAG, "SDSPI_CLK=%d", CONFIG_SDSPI_CLK);
+	ESP_LOGI(TAG, "SDSPI_CS=%d", CONFIG_SDSPI_CS);
 
 	sdmmc_host_t host = SDSPI_HOST_DEFAULT();
 	spi_bus_config_t bus_cfg = {
-		.mosi_io_num = CONFIG_EXAMPLE_PIN_MOSI,
-		.miso_io_num = CONFIG_EXAMPLE_PIN_MISO,
-		.sclk_io_num = CONFIG_EXAMPLE_PIN_CLK,
+		.mosi_io_num = CONFIG_SDSPI_MOSI,
+		.miso_io_num = CONFIG_SDSPI_MISO,
+		.sclk_io_num = CONFIG_SDSPI_CLK,
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1,
 		.max_transfer_sz = 4000,
@@ -321,7 +321,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
 	sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
-	slot_config.gpio_cs = CONFIG_EXAMPLE_PIN_CS;
+	slot_config.gpio_cs = CONFIG_SDSPI_CS;
 	slot_config.host_id = host.slot;
 
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
