@@ -12,6 +12,8 @@ idf.py menuconfig
 idf.py flash
 ```
 
+__If you need more space on FLASH, you need to modify partitions_example.csv.__   
+
 # Installation for 2M Flash like ESP32C3
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
@@ -21,6 +23,9 @@ idf.py set-target esp32c3
 idf.py menuconfig
 idf.py flash
 ```
+
+__If you need more space on FLASH, you need to modify partitions_example.csv.__   
+
 
 # Configuration
 
