@@ -2,60 +2,74 @@
 FTP Client for esp-idf.   
 This project use [ESP32-FTP-Client](https://github.com/JohnnyB1290/ESP32-FTP-Client).   
 
-# Installation
+# Installation for 4M Flash like ESP32
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
 cd esp-idf-ftpClient/
-idf.py set-target {esp32/esp32s2/esp32c3}
+cp partitions_example.csv.esp32 partitions_example.csv
+idf.py set-target {esp32/esp32s2/esp32s3}
 idf.py menuconfig
 idf.py flash
 ```
 
-# Configure
-You have to set this config value with menuconfig.   
-- CONFIG_FILE_SYSTEM   
-See below.
-- CONFIG_ESP_WIFI_SSID   
-SSID of your wifi.
-- CONFIG_ESP_WIFI_PASSWORD   
-PASSWORD of your wifi.
-- CONFIG_ESP_MAXIMUM_RETRY   
-Maximum number of retries when connecting to wifi.
-- CONFIG_FTP_SERVER   
-IP or MDNS of FTP Server.
-- CONFIG_FTP_USER   
-Username of FTP Server.
-- CONFIG_FTP_PASSWORD   
-Password of FTP Server.
+# Installation for 2M Flash like ESP32C3
+```
+git clone https://github.com/nopnop2002/esp-idf-ftpClient
+cd esp-idf-ftpClient/
+cp partitions_example.csv.esp32c3 partitions_example.csv
+idf.py set-target esp32c3
+idf.py menuconfig
+idf.py flash
+```
 
-![config-main](https://user-images.githubusercontent.com/6020549/107837354-d399ae00-6de3-11eb-9fb3-f221e536a5b9.jpg)
-![config-app-1](https://user-images.githubusercontent.com/6020549/107837352-d3011780-6de3-11eb-9ec5-bdb43bfe304d.jpg)
+# Configuration
 
+![config-top](https://user-images.githubusercontent.com/6020549/165466546-f6609f93-679d-4de9-9b45-db11b723d815.jpg)
+![config-app](https://user-images.githubusercontent.com/6020549/165466556-7c5770da-e75b-4aa8-a49f-43c975233809.jpg)
+
+## File System Setting   
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
 - SPIFFS file system on FLASH   
 - FAT file system on FLASH   
 - FAT file system on SPI peripheral SDCARD   
-- FAT file system on SDMMC peripheral SDCARD   
-- FAT file system on External Flash like Winbond W25Q64    
+- FAT file system on SDMMC peripheral SDCARD(Valid only for ESP32/ESP32S3)   
+- FAT file system on External Flash like Winbond W25Q64(Valid only for ESP32)    
 
-![config-app-2](https://user-images.githubusercontent.com/6020549/107871813-4429f300-6ee8-11eb-9f8e-9970df06f82f.jpg)
+![config-file-system-1](https://user-images.githubusercontent.com/6020549/165466672-edf8c8f7-6505-4df7-ad82-c78d63198271.jpg)
+![config-file-system-2](https://user-images.githubusercontent.com/6020549/165466686-f8760b46-d93b-4f11-8664-2dfdb37d6f91.jpg)
+
+Note:   
+Be careful when using SDMM and External Flash.   
+Details will be described later.   
+
+## Wifi Setting   
+
+![config-wifi](https://user-images.githubusercontent.com/6020549/165469815-dfe6407b-4598-4cc7-8f60-4ceef4618529.jpg)
+
+
+## FTP Server Setting   
+
+![config-ftp-server](https://user-images.githubusercontent.com/6020549/165469878-2e591cca-a740-4821-b3bf-53fef6dc6dd0.jpg)
+
 
 # Using FAT file system on SPI peripheral SDCARD
 __Must be formatted with FAT32 before use__
 
-|ESP32 pin|SPI pin|Notes|
-|:-:|:-:|:--|
-|GPIO14|SCK|10k pull up if can't mount|
-|GPIO15|MOSI|10k pull up if can't mount|
-|GPIO2|MISO|10k pull up if can't mount|
-|GPIO13|CS|10k pull up if can't mount|
+|ESP32|ESP32S2/S3|ESP32C3|SPI pin|Notes|
+|:-:|:-:|:-:|:-:|:--|
+|GPIO23|GPIO35|GPIO04|MOSI|10k pull up if can't mount|
+|GPIO19|GPIO37|GPIO06|MISO|10k pull up if can't mount|
+|GPIO18|GPIO36|GPIO05|SCK|10k pull up if can't mount|
+|GPIO13|GPIO34|GPIO01|CS|10k pull up if can't mount|
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
-Note: ESP32-S2 is same as ESP32.   
+__You can change it to any pin using menuconfig.__   
 
-Note: This example doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.
+Note:   
+This example doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
+
 
 # Using FAT file system on SDMMC peripheral SDCARD
 __Must be formatted with FAT32 before use__
@@ -68,29 +82,30 @@ __Must be formatted with FAT32 before use__
 |GPIO4|D1|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
 |GPIO12|D2|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
 |GPIO13|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
-|N/C|CD|optional, not used in the example|
-|N/C|WP|optional, not used in the example|
+|N/C|CD|not used in this project|
+|N/C|WP|not used in this project|
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
-|ESP32-S2 pin|SD card pin|Notes|
+|ESP32-S3 pin|SD card pin|Notes|
 |:-:|:-:|:--|
-|GPIO14|CLK|10k pullup|
-|GPIO15|CMD|10k pullup|
-|GPIO2|D0|10k pullup|
-|GPIO13|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
-|N/C|CD|optional, not used in the example|
-|N/C|WP|optional, not used in the example|
+|GPIO36|CLK|10k pullup|
+|GPIO35|CMD|10k pullup|
+|GPIO37|D0|10k pullup|
+|GPIO38|D1|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
+|GPIO33|D2|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
+|GPIO34|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
+|N/C|CD|not used in this project|
+|N/C|WP|not used in this project|
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
-Note: that ESP32-S2 doesn't include SD Host peripheral and only supports SD over SPI. Therefore only SCK, MOSI, MISO, CS and ground pins need to be connected.
 
 # Note about GPIO2 (ESP32 only)   
 GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode.   
 One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
 
-# Note about GPIO12 (ESP32 only)   
+## Note about GPIO12 (ESP32 only)   
 GPIO12 is used as a bootstrapping pin to select output voltage of an internal regulator which powers the flash chip (VDD_SDIO).   
 This pin has an internal pulldown so if left unconnected it will read low at reset (selecting default 3.3V operation).   
 When adding a pullup to this pin for SD card operation, consider the following:
@@ -114,8 +129,6 @@ https://github.com/nopnop2002/esp-idf-w25q64
 |3.3V||/HOLD|
 |3.3V||VCC|
 |GND||GND|
-
-Note: ESP32-S2 is NOT support this function.   
 
 Note: You will get an error. It works fine after a few resets. At the moment, it is not stable.   
 ```
@@ -182,7 +195,6 @@ These routines allow programs access to the data streams connected to remote fil
 - Read local file   
 
 # Reference   
-
 - FTP Server using FAT File system.   
 Since it uses the FAT file system instead of SPIFFS, directory operations are possible.   
 https://github.com/nopnop2002/esp-idf-ftpServer   

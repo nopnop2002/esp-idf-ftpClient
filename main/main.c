@@ -50,17 +50,7 @@ static EventGroupHandle_t s_wifi_event_group;
  * - we are connected to the AP with an IP
  * - we failed to connect after the maximum amount of retries */
 #define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT		 BIT1
-
-#if CONFIG_SPI_SDCARD
-// Pin mapping when using SPI mode.
-// With this mapping, SD card can be used both in SPI and 1-line SD mode.
-// Note that a pull-up on CS line is required in SD mode.
-#define PIN_NUM_MISO	2
-#define PIN_NUM_MOSI	15
-#define PIN_NUM_CLK		14
-#define PIN_NUM_CS		13
-#endif 
+#define WIFI_FAIL_BIT BIT1
 
 static int s_retry_num = 0;
 
@@ -209,7 +199,7 @@ static const esp_partition_t* add_partition(esp_flash_t* ext_flash, const char* 
 	return fat_partition;
 }
 
-#endif
+#endif // CONFIG_EXT_FLASH
 
 #if CONFIG_SPIFFS 
 esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
@@ -270,16 +260,8 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 	ESP_LOGI(TAG, "s_wl_handle=%d",s_wl_handle);
 	return s_wl_handle;
 }
-#endif
+#endif // CONFIG_FATFS || CONFIG_EXT_FLASH
 
-
-#ifdef CONFIG_IDF_TARGET_ESP32S2
-// on ESP32-S2, DMA channel must be the same as host id
-#define SPI_DMA_CHAN	host.slot
-#else
-// on ESP32, DMA channel to be used by the SPI peripheral
-#define SPI_DMA_CHAN	1
-#endif
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
@@ -317,16 +299,21 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
 #else
 	ESP_LOGI(TAG, "Initializing SPI peripheral");
+	ESP_LOGI(TAG, "EXAMPLE_PIN_MOSI=%d", CONFIG_EXAMPLE_PIN_MOSI);
+	ESP_LOGI(TAG, "EXAMPLE_PIN_MISO=%d", CONFIG_EXAMPLE_PIN_MISO);
+	ESP_LOGI(TAG, "EXAMPLE_PIN_CLK=%d", CONFIG_EXAMPLE_PIN_CLK);
+	ESP_LOGI(TAG, "EXAMPLE_PIN_CS=%d", CONFIG_EXAMPLE_PIN_CS);
+
 	sdmmc_host_t host = SDSPI_HOST_DEFAULT();
 	spi_bus_config_t bus_cfg = {
-		.mosi_io_num = PIN_NUM_MOSI,
-		.miso_io_num = PIN_NUM_MISO,
-		.sclk_io_num = PIN_NUM_CLK,
+		.mosi_io_num = CONFIG_EXAMPLE_PIN_MOSI,
+		.miso_io_num = CONFIG_EXAMPLE_PIN_MISO,
+		.sclk_io_num = CONFIG_EXAMPLE_PIN_CLK,
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1,
 		.max_transfer_sz = 4000,
 	};
-	ret = spi_bus_initialize(host.slot, &bus_cfg, SPI_DMA_CHAN);
+	ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
 	if (ret != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initialize bus.");
 		return ret;
@@ -334,7 +321,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
 	sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
-	slot_config.gpio_cs = PIN_NUM_CS;
+	slot_config.gpio_cs = CONFIG_EXAMPLE_PIN_CS;
 	slot_config.host_id = host.slot;
 
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
@@ -356,7 +343,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	ESP_LOGI(TAG, "Mounte SD card on %s", mount_point);
 	return ret;
 }
-#endif
+#endif // CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 
 void app_main(void)
 {

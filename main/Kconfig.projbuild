@@ -1,72 +1,112 @@
 menu "FTP Client Configuration"
 
-	comment "for File System Selection"
+	menu "File System Setting"
 
-	choice FILE_SYSTEM
-		prompt "File System Selection"
-		default SPIFFS
-		help
-			Select File System.
-		config SPIFFS
-			bool "SPIFFS File System on FLASH"
+		choice FILE_SYSTEM
+			prompt "File System Selection"
+			default SPIFFS
 			help
-				Use SPIFFS File System on FLASH.
-		config FATFS
-			bool "FAT File System on FLASH"
+				Select File System.
+			config SPIFFS
+				bool "SPIFFS File System on FLASH"
+				help
+					Use SPIFFS File System on FLASH.
+			config FATFS
+				bool "FAT File System on FLASH"
+				help
+					Use FAT File System on FLASH.
+			config SPI_SDCARD
+				bool "FAT File System on SPI SDCARD"
+				help
+					Use FAT File System on SPI SDCARD.
+			config MMC_SDCARD
+				depends on IDF_TARGET_ESP32 || IDF_TARGET_ESP32S3
+				bool "FAT File System on MMC SDCARD"
+				help
+					Use FAT File System on MMC SDCARD.
+			config EXT_FLASH
+				depends on IDF_TARGET_ESP32
+				bool "FAT File System on External Flash"
+				help
+					Use FAT File System on External Flash.
+		endchoice
+
+		config EXAMPLE_PIN_MOSI
+			depends on SPI_SDCARD
+			int "MOSI GPIO number"
+			default 23 if IDF_TARGET_ESP32
+			default 35 if IDF_TARGET_ESP32S2
+			default 35 if IDF_TARGET_ESP32S3
+			default 4  # C3 and others
+
+		config EXAMPLE_PIN_MISO
+			depends on SPI_SDCARD
+			int "MISO GPIO number"
+			default 19 if IDF_TARGET_ESP32
+			default 37 if IDF_TARGET_ESP32S2
+			default 37 if IDF_TARGET_ESP32S3
+			default 6  # C3 and others
+
+		config EXAMPLE_PIN_CLK
+			depends on SPI_SDCARD
+			int "CLK GPIO number"
+			default 18 if IDF_TARGET_ESP32
+			default 36 if IDF_TARGET_ESP32S2
+			default 36 if IDF_TARGET_ESP32S3
+			default 5  # C3 and others
+
+		config EXAMPLE_PIN_CS
+			depends on SPI_SDCARD
+			int "CS GPIO number"
+			default 13 if IDF_TARGET_ESP32
+			default 34 if IDF_TARGET_ESP32S2
+			default 34 if IDF_TARGET_ESP32S3
+			default 1  # C3 and others
+
+	endmenu
+
+	menu "WiFi Setting"
+
+		config ESP_WIFI_SSID
+			string "WiFi SSID"
+			default "myssid"
 			help
-				Use FAT File System on FLASH.
-		config SPI_SDCARD
-			bool "FAT File System on SPI SDCARD"
+				SSID (network name) to connect to.
+
+		config ESP_WIFI_PASSWORD
+			string "WiFi Password"
+			default "mypassword"
 			help
-				Use FAT File System on SPI SDCARD.
-		config MMC_SDCARD
-			bool "FAT File System on MMC SDCARD"
+				WiFi password (WPA or WPA2) to connect to.
+
+		config ESP_MAXIMUM_RETRY
+			int "Maximum retry"
+			default 5
 			help
-				Use FAT File System on MMC SDCARD.
-		config EXT_FLASH
-			bool "FAT File System on External Flash"
+				Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+
+	endmenu
+
+	menu "FTP Server Setting"
+
+		config FTP_SERVER
+			string "FTP Server"
+			default "ftpserver.local"
 			help
-				Use FAT File System on External Flash.
-	endchoice
+				FTP Server host name or ip address to use.
 
-	comment "for WiFi Setting"
+		config FTP_USER
+			string "FTP User Name"
+			default "ftpuser"
+			help
+				FTP User name to use.
 
-	config ESP_WIFI_SSID
-		string "WiFi SSID"
-		default "myssid"
-		help
-			SSID (network name) for the example to connect to.
+		config FTP_PASSWORD
+			string "FTP Password"
+			default "ftppass"
+			help
+				FTP Password to use.
 
-	config ESP_WIFI_PASSWORD
-		string "WiFi Password"
-		default "mypassword"
-		help
-			WiFi password (WPA or WPA2) for the example to use.
-
-	config ESP_MAXIMUM_RETRY
-		int "Maximum retry"
-		default 5
-		help
-			Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
-
-	comment "for FTP Server Setting"
-
-	config FTP_SERVER
-		string "FTP Server"
-		default "myftpserver"
-		help
-			FTP Server host name or ip address for the example to use.
-
-	config FTP_USER
-		string "FTP User Name"
-		default "myftpuser"
-		help
-			FTP User name for the example to use.
-
-	config FTP_PASSWORD
-		string "FTP Password"
-		default "myftppass"
-		help
-			FTP Password for the example to use.
+	endmenu
 
 endmenu

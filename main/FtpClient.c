@@ -405,7 +405,8 @@ static int openPort(NetBuf_t* nControl, NetBuf_t** nData, int mode, int dir)
 		sprintf(nControl->response, "Invalid mode %c\n", mode);
 		return -1;
 	}
-	unsigned int l = sizeof(sin);
+	//unsigned int l = sizeof(sin);
+	socklen_t l = sizeof(sin);
 	if (nControl->cmode == FTP_CLIENT_PASSIVE) {
 		memset(&sin, 0, l);
 		sin.in.sin_family = AF_INET;
@@ -615,7 +616,8 @@ static int acceptConnection(NetBuf_t* nData, NetBuf_t* nControl)
 	else {
 		if (FD_ISSET(nData->handle, &mask)) {
 			struct sockaddr addr;
-			unsigned int l = sizeof(addr);
+			//unsigned int l = sizeof(addr);
+			socklen_t l = sizeof(addr);
 			int sData = accept(nData->handle, &addr, &l);
 			i = errno;
 			closesocket(nData->handle);
@@ -782,13 +784,13 @@ static int clearCallbackFtpClient(NetBuf_t* nControl)
  */
 static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl)
 {
-	ESP_LOGD(TAG, "connectFtpClient");
+	ESP_LOGI(TAG, "connectFtpClient host=%s", host);
 	struct sockaddr_in sin;
 	memset(&sin,0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 	sin.sin_addr.s_addr = inet_addr(host);
-	ESP_LOGD(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+	ESP_LOGI(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
 	if (sin.sin_addr.s_addr == 0xffffffff) {
 		struct hostent *hp;
 		hp = gethostbyname(host);
@@ -801,6 +803,7 @@ static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl
 		struct ip4_addr *ip4_addr;
 		ip4_addr = (struct ip4_addr *)hp->h_addr;
 		sin.sin_addr.s_addr = ip4_addr->addr;
+		ESP_LOGI(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
 	}
 
 	int sControl = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
