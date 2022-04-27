@@ -40,8 +40,7 @@ You can select any one using menuconfig.
 ![config-file-system-2](https://user-images.githubusercontent.com/6020549/165466686-f8760b46-d93b-4f11-8664-2dfdb37d6f91.jpg)
 
 Note:   
-Be careful when using SDMM and External Flash.   
-Details will be described later.   
+The connection when using SDSPI, SDMMC, and External flash will be described later.   
 
 ## Wifi Setting   
 
@@ -54,7 +53,6 @@ Details will be described later.
 
 
 # Using FAT file system on SPI peripheral SDCARD
-__Must be formatted with FAT32 before use__
 
 |ESP32|ESP32S2/S3|ESP32C3|SPI pin|Notes|
 |:-:|:-:|:-:|:-:|:--|
@@ -62,8 +60,8 @@ __Must be formatted with FAT32 before use__
 |GPIO19|GPIO37|GPIO06|MISO|10k pull up if can't mount|
 |GPIO18|GPIO36|GPIO05|SCK|10k pull up if can't mount|
 |GPIO13|GPIO34|GPIO01|CS|10k pull up if can't mount|
-|3.3V|VCC|Don't use 5V supply|
-|GND|GND||
+|3.3V|3.3V|3.3V|VCC|Don't use 5V supply|
+|GND|GND|GND|GND||
 
 __You can change it to any pin using menuconfig.__   
 
@@ -72,7 +70,6 @@ This example doesn't utilize card detect (CD) and write protect (WP) signals fro
 
 
 # Using FAT file system on SDMMC peripheral SDCARD
-__Must be formatted with FAT32 before use__
 
 |ESP32 pin|SD card pin|Notes|
 |:-:|:-:|:--|
@@ -101,7 +98,7 @@ __Must be formatted with FAT32 before use__
 |GND|GND||
 
 
-# Note about GPIO2 (ESP32 only)   
+## Note about GPIO2 (ESP32 only)   
 GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode.   
 One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
 
