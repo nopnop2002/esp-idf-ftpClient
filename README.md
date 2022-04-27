@@ -59,7 +59,7 @@ The connection when using SDSPI, SDMMC, and External flash will be described lat
 
 # Using FAT file system on SPI peripheral SDCARD
 
-|ESP32|ESP32S2/S3|ESP32C3|SPI pin|Notes|
+|ESP32|ESP32S2/S3|ESP32C3|SD card pin|Notes|
 |:-:|:-:|:-:|:-:|:--|
 |GPIO23|GPIO35|GPIO04|MOSI|10k pull up if can't mount|
 |GPIO19|GPIO37|GPIO06|MISO|10k pull up if can't mount|
