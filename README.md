@@ -73,7 +73,7 @@ The connection when using SDSPI, SDMMC, and External flash will be described lat
 __You can change it to any pin using menuconfig.__   
 
 Note:   
-This example doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
+This project doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
 
 
 # Using FAT file system on SDMMC peripheral SDCARD
