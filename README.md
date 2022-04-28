@@ -78,7 +78,7 @@ This example doesn't utilize card detect (CD) and write protect (WP) signals fro
 
 # Using FAT file system on SDMMC peripheral SDCARD
 
-On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX. GPIO pins cannot be customized. Please see the table below for the pin connections.
+On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX. __GPIO pins cannot be customized.__ Please see the table below for the pin connections.
 
 |ESP32 pin|SD card pin|Notes|
 |:-:|:-:|:--|
@@ -96,7 +96,7 @@ On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX. 
 ![config-file-system-sdmmc-esp32](https://user-images.githubusercontent.com/6020549/165658970-6956c9c4-eb24-44fe-99c2-758045300adc.jpg)
 
 
-On ESP32-S3, SDMMC peripheral is connected to GPIO pins using GPIO matrix. This allows arbitrary GPIOs to be used to connect an SD card. 
+On ESP32-S3, SDMMC peripheral is connected to GPIO pins using GPIO matrix. __This allows arbitrary GPIOs to be used to connect an SD card.__
 
 |ESP32-S3 pin|SD card pin|Notes|
 |:-:|:-:|:--|
