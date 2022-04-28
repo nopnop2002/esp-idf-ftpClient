@@ -85,18 +85,9 @@ esp_err_t wifi_init_sta()
 	ESP_LOGI(TAG,"ESP-IDF Ver%d.%d", ESP_IDF_VERSION_MAJOR, ESP_IDF_VERSION_MINOR);
 	ESP_LOGI(TAG,"ESP_IDF_VERSION %d", ESP_IDF_VERSION);
 
-//#if ESP_IDF_VERSION_MAJOR >= 4 && ESP_IDF_VERSION_MINOR >= 1 
-#if ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 1, 0)
-	ESP_LOGI(TAG,"ESP-IDF Ver4.1");
 	ESP_ERROR_CHECK(esp_netif_init());
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 	esp_netif_create_default_wifi_sta();
-#else
-	ESP_LOGE(TAG,"esp-idf version 4.1 or higher required");
-	while(1) {
-		vTaskDelay(1);
-	}
-#endif
 
 	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
@@ -277,6 +268,11 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	//sdmmc_card_t* card;
 
 #if CONFIG_MMC_SDCARD
+	// Use settings defined above to initialize SD card and mount FAT filesystem.
+	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
+	// Please check its source code and implement error recovery when developing
+	// production applications.
+
 	ESP_LOGI(TAG, "Initializing SDMMC peripheral");
 	sdmmc_host_t host = SDMMC_HOST_DEFAULT();
 
@@ -284,9 +280,38 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
 	sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
 
-	// To use 1-line SD mode, uncomment the following line:
-	// slot_config.width = 1;
+	// Set bus width to use:
+#ifdef CONFIG_SDMMC_BUS_WIDTH_4
+	ESP_LOGI(TAG, "SDMMC 4 line mode");
+	slot_config.width = 4;
+#else
+	ESP_LOGI(TAG, "SDMMC 1 line mode");
+	slot_config.width = 1;
+#endif
 
+	// On chips where the GPIOs used for SD card can be configured, set them in
+	// the slot_config structure:
+#ifdef SOC_SDMMC_USE_GPIO_MATRIX
+	ESP_LOGI(TAG, "SOC_SDMMC_USE_GPIO_MATRIX");
+	slot_config.clk = CONFIG_SDMMC_CLK; //GPIO_NUM_36;
+	slot_config.cmd = CONFIG_SDMMC_CMD; //GPIO_NUM_35;
+	slot_config.d0 = CONFIG_SDMMC_D0; //GPIO_NUM_37;
+#ifdef CONFIG_SDMMC_BUS_WIDTH_4
+	slot_config.d1 = CONFIG_SDMMC_D1; //GPIO_NUM_38;
+	slot_config.d2 = CONFIG_SDMMC_D2; //GPIO_NUM_33;
+	slot_config.d3 = CONFIG_SDMMC_D3; //GPIO_NUM_34;
+#endif // CONFIG_SDMMC_BUS_WIDTH_4
+#endif // SOC_SDMMC_USE_GPIO_MATRIX
+
+	// Enable internal pullups on enabled pins. The internal pullups
+	// are insufficient however, please make sure 10k external pullups are
+	// connected on the bus. This is for debug / example purpose only.
+	slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
+
+	ESP_LOGI(TAG, "Mounting filesystem");
+	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
+	
+#if 0
 	// GPIOs 15, 2, 4, 12, 13 should have external 10k pull-ups.
 	// Internal pull-ups are not sufficient. However, enabling internal pull-ups
 	// does make a difference some boards, so we do that here.
@@ -297,6 +322,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	gpio_set_pull_mode(13, GPIO_PULLUP_ONLY);	// D3, needed in 4- and 1-line modes
 
 	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
+#endif
 #else
 	ESP_LOGI(TAG, "Initializing SPI peripheral");
 	ESP_LOGI(TAG, "SDSPI_MOSI=%d", CONFIG_SDSPI_MOSI);

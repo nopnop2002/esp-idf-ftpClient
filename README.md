@@ -68,6 +68,8 @@ The connection when using SDSPI, SDMMC, and External flash will be described lat
 |3.3V|3.3V|3.3V|VCC|Don't use 5V supply|
 |GND|GND|GND|GND||
 
+![config-file-system-sdspi](https://user-images.githubusercontent.com/6020549/165658882-b4df4ff5-c75d-47b0-a749-bd4087482dfd.jpg)
+
 __You can change it to any pin using menuconfig.__   
 
 Note:   
@@ -76,11 +78,13 @@ This example doesn't utilize card detect (CD) and write protect (WP) signals fro
 
 # Using FAT file system on SDMMC peripheral SDCARD
 
+On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX. GPIO pins cannot be customized. Please see the table below for the pin connections.
+
 |ESP32 pin|SD card pin|Notes|
 |:-:|:-:|:--|
 |GPIO14|CLK|10k pullup|
 |GPIO15|CMD|10k pullup|
-|GPIO2|D0|10k pullup|
+|GPIO2|D0|10k pullup or connect to GPIO00|
 |GPIO4|D1|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
 |GPIO12|D2|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
 |GPIO13|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
@@ -88,6 +92,11 @@ This example doesn't utilize card detect (CD) and write protect (WP) signals fro
 |N/C|WP|not used in this project|
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
+
+![config-file-system-sdmmc-esp32](https://user-images.githubusercontent.com/6020549/165658970-6956c9c4-eb24-44fe-99c2-758045300adc.jpg)
+
+
+On ESP32-S3, SDMMC peripheral is connected to GPIO pins using GPIO matrix. This allows arbitrary GPIOs to be used to connect an SD card. 
 
 |ESP32-S3 pin|SD card pin|Notes|
 |:-:|:-:|:--|
@@ -102,10 +111,13 @@ This example doesn't utilize card detect (CD) and write protect (WP) signals fro
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
+![config-file-system-sdmmc-esp32s3](https://user-images.githubusercontent.com/6020549/165659001-8e767614-39e5-4e19-9e90-8ce0c8e79f57.jpg)
+
 
 ## Note about GPIO2 (ESP32 only)   
-GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode.   
-One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
+GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode. One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
+
+- Some boards have pulldown and/or LED on GPIO2. LED is usually ok, but pulldown will interfere with D0 signals and must be removed. Check the schematic of your development board for anything connected to GPIO2.
 
 ## Note about GPIO12 (ESP32 only)   
 GPIO12 is used as a bootstrapping pin to select output voltage of an internal regulator which powers the flash chip (VDD_SDIO).   

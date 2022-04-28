@@ -38,6 +38,62 @@ menu "FTP Client Configuration"
 					Use FAT File System on External Flash.
 		endchoice
 
+		choice SDMMC_BUS_WIDTH
+			depends on MMC_SDCARD
+			prompt "SD/MMC bus width"
+			default SDMMC_BUS_WIDTH_1
+			help
+				Select the bus width of SD or MMC interface.
+				Note that even if 1 line mode is used, D3 pin of the SD card must have a pull-up resistor connected.
+				Otherwise the card may enter SPI mode, the only way to recover from which is to cycle power to the card.
+
+			config SDMMC_BUS_WIDTH_4
+				bool "4 lines (D0 - D3)"
+
+			config SDMMC_BUS_WIDTH_1
+				bool "1 line (D0)"
+		endchoice
+
+
+		if SOC_SDMMC_USE_GPIO_MATRIX
+
+			config SDMMC_CMD
+				depends on MMC_SDCARD
+				int "CMD GPIO number"
+				default 35 if IDF_TARGET_ESP32S3
+
+			config SDMMC_CLK
+				depends on MMC_SDCARD
+				int "CLK GPIO number"
+				default 36 if IDF_TARGET_ESP32S3
+
+			config SDMMC_D0
+				depends on MMC_SDCARD
+				int "D0 GPIO number"
+				default 37 if IDF_TARGET_ESP32S3
+
+			if SDMMC_BUS_WIDTH_4
+
+				config SDMMC_D1
+					depends on MMC_SDCARD
+					int "D1 GPIO number"
+					default 38 if IDF_TARGET_ESP32S3
+
+				config SDMMC_D2
+					depends on MMC_SDCARD
+					int "D2 GPIO number"
+					default 33 if IDF_TARGET_ESP32S3
+
+				config SDMMC_D3
+					depends on MMC_SDCARD
+					int "D3 GPIO number"
+					default 34 if IDF_TARGET_ESP32S3
+
+			endif  # EXAMPLE_SDMMC_BUS_WIDTH_4
+
+		endif  # SOC_SDMMC_USE_GPIO_MATRIX
+
+
 		config SDSPI_MOSI
 			depends on SPI_SDCARD
 			int "MOSI GPIO number"
