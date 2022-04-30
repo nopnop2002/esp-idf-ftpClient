@@ -33,9 +33,9 @@ menu "FTP Client Configuration"
 					Use FAT File System on MMC SDCARD.
 			config EXT_FLASH
 				depends on IDF_TARGET_ESP32
-				bool "FAT File System on External Flash"
+				bool "FAT File System on SPI Flash Memory"
 				help
-					Use FAT File System on External Flash.
+					Use FAT File System on SPI Flash Memory.
 		endchoice
 
 		choice SDMMC_BUS_WIDTH
