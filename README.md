@@ -32,7 +32,7 @@ __If you need more storage space on FLASH, you need to modify partitions_example
 ![config-top](https://user-images.githubusercontent.com/6020549/165466546-f6609f93-679d-4de9-9b45-db11b723d815.jpg)
 ![config-app](https://user-images.githubusercontent.com/6020549/165466556-7c5770da-e75b-4aa8-a49f-43c975233809.jpg)
 
-## File System Setting   
+## File System Selection   
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
 - SPIFFS file system on FLASH   
