@@ -26,6 +26,20 @@ idf.py flash
 
 __If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
+# Partition table
+```
+# Name,   Type, SubType, Offset,  Size, Flags
+# Note: if you have increased the bootloader size, make sure to update the offsets to avoid overlap
+nvs,      data, nvs,     0x9000,  0x6000,
+phy_init, data, phy,     0xf000,  0x1000,
+factory,  app,  factory, 0x10000, 1M,
+storage0,  data, spiffs, ,        0x70000,  ---> This is for SPIFFS file system
+storage1,  data, fat,    ,        0x70000,  ---> This is for FAT file system
+```
+
+Never use both at the same time.   
+You can delete file systems that you don't use.   
+
 
 # Configuration
 
