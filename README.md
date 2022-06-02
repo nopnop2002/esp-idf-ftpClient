@@ -6,7 +6,7 @@ This project use [ESP32-FTP-Client](https://github.com/JohnnyB1290/ESP32-FTP-Cli
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
 cd esp-idf-ftpClient/
-idf.py set-target {esp32/esp32s2/esp32s3}
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
 idf.py menuconfig
 idf.py flash
 ```
