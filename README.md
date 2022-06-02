@@ -168,6 +168,28 @@ I (1661) FTP: Initializing FAT file system
 I (1661) FTP: Mount FAT filesystem on /root
 ```
 
+
+
+# Using LilyGo ESP32-S2
+The LilyGo ESP32-S2 development board has a micro SD card slot on the board.   
+It is connected to the ESP32 by SPI, and the peripheral power is supplied from GPIO14.   
+__No equipment other than the development board is required.__   
+It works very stably.   
+
+|ESP32 pin|SPI bus signal|
+|:-:|:-:|
+|GPIO11|MOSI|
+|GPIO13|MISO|
+|GPIO12|SCK|
+|GPIO10|CS|
+|GPIO14|POWER|
+
+![LilyGo-esp32-s2-1](https://user-images.githubusercontent.com/6020549/107864770-00f96100-6ea3-11eb-8549-6885ae398111.JPG)
+![config_file-system-sdspi-LilyGo_ESP32-S2](https://user-images.githubusercontent.com/6020549/171584532-f22e74c8-8772-4b48-9a61-c59ad9cb1e79.jpg)
+
+
+
+
 # API
 Based on ftplib V4.0-1.   
 You can use [working documentation of ftplib](https://nbpfaus.net/~pfau/ftplib/ftplib.html).   

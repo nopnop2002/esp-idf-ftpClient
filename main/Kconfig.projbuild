@@ -130,6 +130,15 @@ menu "FTP Client Configuration"
 			default 34 if IDF_TARGET_ESP32S3
 			default 1  # C3 and others
 
+		config SDSPI_POWER
+			depends on SPI_SDCARD
+			int "POWER GPIO number"
+			range -1 GPIO_RANGE_MAX
+			default -1
+			help
+				GPIO number (IOxx) to SPI POWER.
+				When it is -1, the POWER isn't performed.
+
 	endmenu
 
 	menu "WiFi Setting"

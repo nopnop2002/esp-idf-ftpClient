@@ -253,9 +253,9 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 }
 #endif // CONFIG_FATFS || CONFIG_EXT_FLASH
 
-
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
+
 	esp_err_t ret;
 	// Options for mounting the filesystem.
 	// If format_if_mount_failed is set to true, SD card will be partitioned and
@@ -323,12 +323,26 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 
 	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
 #endif
-#else
+#endif // CONFIG_MMC_SDCARD
+
+#if CONFIG_SPI_SDCARD
 	ESP_LOGI(TAG, "Initializing SPI peripheral");
 	ESP_LOGI(TAG, "SDSPI_MOSI=%d", CONFIG_SDSPI_MOSI);
 	ESP_LOGI(TAG, "SDSPI_MISO=%d", CONFIG_SDSPI_MISO);
 	ESP_LOGI(TAG, "SDSPI_CLK=%d", CONFIG_SDSPI_CLK);
 	ESP_LOGI(TAG, "SDSPI_CS=%d", CONFIG_SDSPI_CS);
+	ESP_LOGI(TAG, "SDSPI_SDSPI_POWER=%d", CONFIG_SDSPI_POWER);
+
+	if (CONFIG_SDSPI_POWER != -1) {
+		//gpio_pad_select_gpio(CONFIG_SDSPI_POWER);
+		gpio_reset_pin(CONFIG_SDSPI_POWER);
+		/* Set the GPIO as a push/pull output */
+		gpio_set_direction(CONFIG_SDSPI_POWER, GPIO_MODE_OUTPUT);
+		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", CONFIG_SDSPI_POWER);
+		gpio_set_level(CONFIG_SDSPI_POWER, 1);
+		vTaskDelay(3000 / portTICK_PERIOD_MS);
+	}
+
 
 	sdmmc_host_t host = SDSPI_HOST_DEFAULT();
 	spi_bus_config_t bus_cfg = {
@@ -351,7 +365,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	slot_config.host_id = host.slot;
 
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
-#endif
+#endif // CONFIG_SPI_SDCARD
 
 	if (ret != ESP_OK) {
 		if (ret == ESP_FAIL) {
