@@ -2,11 +2,10 @@
 FTP Client for esp-idf.   
 This project use [ESP32-FTP-Client](https://github.com/JohnnyB1290/ESP32-FTP-Client). It's a great job.   
 
-# Installation for 4M Flash like ESP32
+# Installation
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
 cd esp-idf-ftpClient/
-cp partitions_example.csv.esp32 partitions_example.csv
 idf.py set-target {esp32/esp32s2/esp32s3}
 idf.py menuconfig
 idf.py flash
@@ -14,17 +13,6 @@ idf.py flash
 
 __If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
-# Installation for 2M Flash like ESP32C3
-```
-git clone https://github.com/nopnop2002/esp-idf-ftpClient
-cd esp-idf-ftpClient/
-cp partitions_example.csv.esp32c3 partitions_example.csv
-idf.py set-target esp32c3
-idf.py menuconfig
-idf.py flash
-```
-
-__If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
 # Partition table
 ```
@@ -36,10 +24,6 @@ factory,  app,  factory, 0x10000, 1M,
 storage0,  data, spiffs, ,        0x70000,  ---> This is for SPIFFS file system
 storage1,  data, fat,    ,        0x70000,  ---> This is for FAT file system
 ```
-
-Never use both at the same time.   
-You can delete file systems that you don't use.   
-
 
 # Configuration
 
