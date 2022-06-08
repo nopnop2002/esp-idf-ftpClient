@@ -191,8 +191,7 @@ It works very stably.
 
 
 # API
-Based on ftplib V4.0-1.   
-You can use [working documentation of ftplib](https://nbpfaus.net/~pfau/ftplib/ftplib.html).   
+Based on [ftplib](https://nbpfaus.net/~pfau/ftplib/ftplib.html) V4.0-1.   
 
 ## Server Connection
 - ftpClientConnect() - Connect to a remote server
