@@ -67,7 +67,7 @@ The connection when using SDSPI, SDMMC, and SPI flash Memory will be described l
 |3.3V|3.3V|3.3V|VCC|Don't use 5V supply|
 |GND|GND|GND|GND||
 
-![config-file-system-sdspi](https://user-images.githubusercontent.com/6020549/165658882-b4df4ff5-c75d-47b0-a749-bd4087482dfd.jpg)
+![config-file-system-sdspi](https://user-images.githubusercontent.com/6020549/182515894-fb7352ae-78ae-429e-b28b-d038dda3ce7f.jpg)
 
 __You can change it to any pin using menuconfig.__   
 
