@@ -116,9 +116,6 @@ static int writeFtpClient(const void* buf, int len, NetBuf_t* nData);
 static int closeFtpClient(NetBuf_t* nData);
 
 
-static const char *TAG = "FTP";
-
-
 /*
  * socket_wait - wait for socket to receive or flush data
  *
@@ -784,13 +781,13 @@ static int clearCallbackFtpClient(NetBuf_t* nControl)
  */
 static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl)
 {
-	ESP_LOGI(TAG, "connectFtpClient host=%s", host);
+	ESP_LOGI(__FUNCTION__, "host=%s", host);
 	struct sockaddr_in sin;
 	memset(&sin,0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 	sin.sin_addr.s_addr = inet_addr(host);
-	ESP_LOGI(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+	ESP_LOGI(__FUNCTION__, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
 	if (sin.sin_addr.s_addr == 0xffffffff) {
 		struct hostent *hp;
 		hp = gethostbyname(host);
@@ -803,11 +800,11 @@ static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl
 		struct ip4_addr *ip4_addr;
 		ip4_addr = (struct ip4_addr *)hp->h_addr;
 		sin.sin_addr.s_addr = ip4_addr->addr;
-		ESP_LOGI(TAG, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+		ESP_LOGI(__FUNCTION__, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
 	}
 
 	int sControl = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-	ESP_LOGD(TAG, "sControl=%d", sControl);
+	ESP_LOGD(__FUNCTION__, "sControl=%d", sControl);
 	if (sControl == -1) {
 		#if FTP_CLIENT_DEBUG
 		perror("FTP Client Error: Connect, socket");
