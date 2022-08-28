@@ -19,9 +19,9 @@ class Handler(FTPHandler):
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 parser = argparse.ArgumentParser()
-parser.add_argument('--user', default="user", help='ftp user name')
-parser.add_argument('--password', default="password", help='ftp user password')
-parser.add_argument('--port', default=2121, help='ftp port')
+parser.add_argument('--user', default="user", help='ftp user name. default is user')
+parser.add_argument('--password', default="password", help='ftp user password. default is password')
+parser.add_argument('--port', default=2121, help='ftp port. default is 2121')
 args = parser.parse_args()
 logging.info("user={} {}".format(type(args.user), args.user))
 logging.info("password={} {}".format(type(args.password), args.password))
