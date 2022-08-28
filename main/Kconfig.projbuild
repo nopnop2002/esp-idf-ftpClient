@@ -166,10 +166,16 @@ menu "FTP Client Configuration"
 	menu "FTP Server Setting"
 
 		config FTP_SERVER
-			string "FTP Server"
+			string "FTP Server Host"
 			default "ftpserver.local"
 			help
-				FTP Server host name or ip address to use.
+				FTP Server host name or ip address to connect.
+
+		config FTP_PORT
+			int "FTP Server Port"
+			default 21
+			help
+				FTP Server port number to connect.
 
 		config FTP_USER
 			string "FTP User Name"

@@ -443,7 +443,9 @@ void app_main(void)
 	ESP_LOGI(TAG, "ftp user  :%s", CONFIG_FTP_USER);
 	static NetBuf_t* ftpClientNetBuf = NULL;
 	FtpClient* ftpClient = getFtpClient();
-	int connect = ftpClient->ftpClientConnect(CONFIG_FTP_SERVER, 21, &ftpClientNetBuf);
+	//int connect = ftpClient->ftpClientConnect(CONFIG_FTP_SERVER, 21, &ftpClientNetBuf);
+	//int connect = ftpClient->ftpClientConnect(CONFIG_FTP_SERVER, 2121, &ftpClientNetBuf);
+	int connect = ftpClient->ftpClientConnect(CONFIG_FTP_SERVER, CONFIG_FTP_PORT, &ftpClientNetBuf);
 	ESP_LOGI(TAG, "connect=%d", connect);
 	if (connect == 0) {
 		ESP_LOGE(TAG, "FTP server connect fail");

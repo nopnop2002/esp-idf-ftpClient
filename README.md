@@ -53,8 +53,7 @@ The connection when using SDSPI, SDMMC, and SPI flash Memory will be described l
 
 ## FTP Server Setting   
 
-![config-ftp-server](https://user-images.githubusercontent.com/6020549/165469878-2e591cca-a740-4821-b3bf-53fef6dc6dd0.jpg)
-
+![config-ftp-server](https://user-images.githubusercontent.com/6020549/187052709-7873970e-c72e-4ea0-b904-85e1b0afc799.jpg)
 
 # Using FAT file system on SPI peripheral SDCARD
 
