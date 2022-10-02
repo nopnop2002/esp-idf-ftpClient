@@ -30,8 +30,26 @@
 #include "esp_flash.h"
 #include "esp_flash_spi_init.h"
 #include "esp_partition.h"
+//#include "soc/spi_pins.h"
+
+// h2 and c2 will not support external flash
+//#define EXAMPLE_FLASH_FREQ_MHZ 40
+
+// ESP32 (VSPI)
+#ifdef CONFIG_IDF_TARGET_ESP32
+#define HOST_ID  SPI3_HOST
+#define SPI_DMA_CHAN SPI_DMA_CH_AUTO
+#else // Other chips (SPI2/HSPI)
+#define HOST_ID  SPI2_HOST
+#define SPI_DMA_CHAN SPI_DMA_CH_AUTO
+#endif
 
 #include "FtpClient.h"
+
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0))
+#define esp_vfs_fat_spiflash_mount esp_vfs_fat_spiflash_mount_rw_wl
+#define esp_vfs_fat_spiflash_unmount esp_vfs_fat_spiflash_unmount_rw_wl
+#endif
 
 static const char *TAG = "FTP";
 static char *MOUNT_POINT = "/root";
@@ -41,7 +59,7 @@ static char *MOUNT_POINT = "/root";
 //#define CONFIG_FATFS	1
 //#define CONFIG_SPI_SDCARD  1
 //#define CONFIG_MMC_SDCARD  1
-//#define CONFIG_EXT_FLASH	 1
+//#define CONFIG_SPI_FLASH	 1
 
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
@@ -134,23 +152,23 @@ esp_err_t wifi_init_sta()
 	return ret_value; 
 }
 
-#if CONFIG_EXT_FLASH
+#if CONFIG_SPI_FLASH
 static esp_flash_t* init_ext_flash(void)
 {
 	const spi_bus_config_t bus_config = {
-		.mosi_io_num = VSPI_IOMUX_PIN_NUM_MOSI,
-		.miso_io_num = VSPI_IOMUX_PIN_NUM_MISO,
-		.sclk_io_num = VSPI_IOMUX_PIN_NUM_CLK,
-		.quadwp_io_num = -1,
+		.mosi_io_num = CONFIG_SPI_MOSI,
+		.miso_io_num = CONFIG_SPI_MISO,
+		.sclk_io_num = CONFIG_SPI_CLK,
 		.quadhd_io_num = -1,
+		.quadwp_io_num = -1,
 	};
 
 	const esp_flash_spi_device_config_t device_config = {
-		.host_id = VSPI_HOST,
+		.host_id = HOST_ID,
 		.cs_id = 0,
-		.cs_io_num = VSPI_IOMUX_PIN_NUM_CS,
+		.cs_io_num = CONFIG_SPI_CS,
 		.io_mode = SPI_FLASH_DIO,
-		.speed = ESP_FLASH_40MHZ
+		.freq_mhz = ESP_FLASH_40MHZ,
 	};
 
 	ESP_LOGI(TAG, "Initializing external SPI Flash");
@@ -161,7 +179,8 @@ static esp_flash_t* init_ext_flash(void)
 	);
 
 	// Initialize the SPI bus
-	ESP_ERROR_CHECK(spi_bus_initialize(VSPI_HOST, &bus_config, 1));
+	ESP_LOGI(TAG, "DMA CHANNEL: %d", SPI_DMA_CHAN);
+	ESP_ERROR_CHECK(spi_bus_initialize(HOST_ID, &bus_config, SPI_DMA_CHAN));
 
 	// Add device to the SPI bus
 	esp_flash_t* ext_flash;
@@ -182,6 +201,7 @@ static esp_flash_t* init_ext_flash(void)
 	return ext_flash;
 }
 
+
 static const esp_partition_t* add_partition(esp_flash_t* ext_flash, const char* partition_label)
 {
 	ESP_LOGI(TAG, "Adding external Flash as a partition, label=\"%s\", size=%d KB", partition_label, ext_flash->size / 1024);
@@ -189,8 +209,7 @@ static const esp_partition_t* add_partition(esp_flash_t* ext_flash, const char* 
 	ESP_ERROR_CHECK(esp_partition_register_external(ext_flash, 0, ext_flash->size, partition_label, ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_FAT, &fat_partition));
 	return fat_partition;
 }
-
-#endif // CONFIG_EXT_FLASH
+#endif // CONFIG_SPI_FLASH
 
 #if CONFIG_SPIFFS 
 esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
@@ -231,7 +250,7 @@ esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
 }
 #endif
 
-#if CONFIG_FATFS || CONFIG_EXT_FLASH
+#if CONFIG_FATFS || CONFIG_SPI_FLASH
 wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 	ESP_LOGI(TAG, "Initializing FAT file system");
 	// To mount device we need name of device partition, define base_path
@@ -251,7 +270,7 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 	ESP_LOGI(TAG, "s_wl_handle=%d",s_wl_handle);
 	return s_wl_handle;
 }
-#endif // CONFIG_FATFS || CONFIG_EXT_FLASH
+#endif // CONFIG_FATFS || CONFIG_SPI_FLASH
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
@@ -327,28 +346,28 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 
 #if CONFIG_SPI_SDCARD
 	ESP_LOGI(TAG, "Initializing SPI peripheral");
-	ESP_LOGI(TAG, "SDSPI_MOSI=%d", CONFIG_SDSPI_MOSI);
-	ESP_LOGI(TAG, "SDSPI_MISO=%d", CONFIG_SDSPI_MISO);
-	ESP_LOGI(TAG, "SDSPI_CLK=%d", CONFIG_SDSPI_CLK);
-	ESP_LOGI(TAG, "SDSPI_CS=%d", CONFIG_SDSPI_CS);
-	ESP_LOGI(TAG, "SDSPI_SDSPI_POWER=%d", CONFIG_SDSPI_POWER);
+	ESP_LOGI(TAG, "SPI_MOSI=%d", CONFIG_SPI_MOSI);
+	ESP_LOGI(TAG, "SPI_MISO=%d", CONFIG_SPI_MISO);
+	ESP_LOGI(TAG, "SPI_CLK=%d", CONFIG_SPI_CLK);
+	ESP_LOGI(TAG, "SPI_CS=%d", CONFIG_SPI_CS);
+	ESP_LOGI(TAG, "SPI_POWER=%d", CONFIG_SPI_POWER);
 
-	if (CONFIG_SDSPI_POWER != -1) {
-		//gpio_pad_select_gpio(CONFIG_SDSPI_POWER);
-		gpio_reset_pin(CONFIG_SDSPI_POWER);
+	if (CONFIG_SPI_POWER != -1) {
+		//gpio_pad_select_gpio(CONFIG_SPI_POWER);
+		gpio_reset_pin(CONFIG_SPI_POWER);
 		/* Set the GPIO as a push/pull output */
-		gpio_set_direction(CONFIG_SDSPI_POWER, GPIO_MODE_OUTPUT);
-		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", CONFIG_SDSPI_POWER);
-		gpio_set_level(CONFIG_SDSPI_POWER, 1);
+		gpio_set_direction(CONFIG_SPI_POWER, GPIO_MODE_OUTPUT);
+		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", CONFIG_SPI_POWER);
+		gpio_set_level(CONFIG_SPI_POWER, 1);
 		vTaskDelay(3000 / portTICK_PERIOD_MS);
 	}
 
 
 	sdmmc_host_t host = SDSPI_HOST_DEFAULT();
 	spi_bus_config_t bus_cfg = {
-		.mosi_io_num = CONFIG_SDSPI_MOSI,
-		.miso_io_num = CONFIG_SDSPI_MISO,
-		.sclk_io_num = CONFIG_SDSPI_CLK,
+		.mosi_io_num = CONFIG_SPI_MOSI,
+		.miso_io_num = CONFIG_SPI_MISO,
+		.sclk_io_num = CONFIG_SPI_CLK,
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1,
 		.max_transfer_sz = 4000,
@@ -361,7 +380,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
 	sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
-	slot_config.gpio_cs = CONFIG_SDSPI_CS;
+	slot_config.gpio_cs = CONFIG_SPI_CS;
 	slot_config.host_id = host.slot;
 
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
@@ -420,7 +439,7 @@ void app_main(void)
 	if (ret != ESP_OK) return;
 #endif 
 
-#if CONFIG_EXT_FLASH
+#if CONFIG_SPI_FLASH
 	// Set up SPI bus and initialize the external SPI Flash chip
 	esp_flash_t* flash = init_ext_flash();
 	if (flash == NULL) return;

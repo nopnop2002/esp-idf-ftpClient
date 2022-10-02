@@ -31,7 +31,7 @@ menu "FTP Client Configuration"
 				bool "FAT File System on MMC SDCARD"
 				help
 					Use FAT File System on MMC SDCARD.
-			config EXT_FLASH
+			config SPI_FLASH
 				depends on IDF_TARGET_ESP32
 				bool "FAT File System on SPI Flash Memory"
 				help
@@ -40,10 +40,10 @@ menu "FTP Client Configuration"
 
 		choice SDMMC_BUS_WIDTH
 			depends on MMC_SDCARD
-			prompt "SD/MMC bus width"
+			prompt "SDMMC bus width"
 			default SDMMC_BUS_WIDTH_1
 			help
-				Select the bus width of SD or MMC interface.
+				Select the bus width of SDMMC interface.
 				Note that even if 1 line mode is used, D3 pin of the SD card must have a pull-up resistor connected.
 				Otherwise the card may enter SPI mode, the only way to recover from which is to cycle power to the card.
 
@@ -66,6 +66,7 @@ menu "FTP Client Configuration"
 				depends on MMC_SDCARD
 				int "CLK GPIO number"
 				default 36 if IDF_TARGET_ESP32S3
+
 
 			config SDMMC_D0
 				depends on MMC_SDCARD
@@ -94,43 +95,51 @@ menu "FTP Client Configuration"
 		endif  # SOC_SDMMC_USE_GPIO_MATRIX
 
 
-		config SDSPI_MOSI
-			depends on SPI_SDCARD
+		config SPI_MOSI
+			depends on SPI_SDCARD || SPI_FLASH
 			int "MOSI GPIO number"
 			range 0 GPIO_RANGE_MAX
 			default 23 if IDF_TARGET_ESP32
 			default 35 if IDF_TARGET_ESP32S2
 			default 35 if IDF_TARGET_ESP32S3
 			default 4  # C3 and others
+			help
+				GPIO number (IOxx) to SPI MOSI.
 
-		config SDSPI_MISO
-			depends on SPI_SDCARD
+		config SPI_MISO
+			depends on SPI_SDCARD || SPI_FLASH
 			int "MISO GPIO number"
 			range 0 GPIO_RANGE_MAX
 			default 19 if IDF_TARGET_ESP32
 			default 37 if IDF_TARGET_ESP32S2
 			default 37 if IDF_TARGET_ESP32S3
 			default 6  # C3 and others
+			help
+				GPIO number (IOxx) to SPI MISO.
 
-		config SDSPI_CLK
-			depends on SPI_SDCARD
+		config SPI_CLK
+			depends on SPI_SDCARD || SPI_FLASH
 			int "CLK GPIO number"
 			range 0 GPIO_RANGE_MAX
 			default 18 if IDF_TARGET_ESP32
 			default 36 if IDF_TARGET_ESP32S2
 			default 36 if IDF_TARGET_ESP32S3
 			default 5  # C3 and others
+			help
+				GPIO number (IOxx) to SPI SCLK.
 
-		config SDSPI_CS
-			depends on SPI_SDCARD
+		config SPI_CS
+			depends on SPI_SDCARD || SPI_FLASH
 			int "CS GPIO number"
 			range 0 GPIO_RANGE_MAX
-			default 14 if IDF_TARGET_ESP32
+			default 5 if IDF_TARGET_ESP32
 			default 34 if IDF_TARGET_ESP32S2
 			default 34 if IDF_TARGET_ESP32S3
 			default 1  # C3 and others
+			help
+				GPIO number (IOxx) to SPI SC.
 
-		config SDSPI_POWER
+		config SPI_POWER
 			depends on SPI_SDCARD
 			int "POWER GPIO number"
 			range -1 GPIO_RANGE_MAX

@@ -62,7 +62,7 @@ The connection when using SDSPI, SDMMC, and SPI flash Memory will be described l
 |GPIO23|GPIO35|GPIO04|MOSI|10k pull up if can't mount|
 |GPIO19|GPIO37|GPIO06|MISO||
 |GPIO18|GPIO36|GPIO05|SCK||
-|GPIO14|GPIO34|GPIO01|CS||
+|GPIO5|GPIO34|GPIO01|CS||
 |3.3V|3.3V|3.3V|VCC|Don't use 5V supply|
 |GND|GND|GND|GND||
 
