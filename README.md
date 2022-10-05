@@ -231,6 +231,13 @@ These routines allow programs access to the data streams connected to remote fil
 - Read local file   
 
 
+# Truble shooting   
+By changing this, you can see the response from the server:
+```
+#define FTP_CLIENT_DEBUG                    2
+```
+
+
 # FTP Server using python
 https://github.com/nopnop2002/esp-idf-ftpClient/tree/master/python-ftp-server
 
