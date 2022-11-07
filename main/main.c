@@ -7,6 +7,7 @@
 */
 
 #include <stdio.h>
+#include <inttypes.h>
 #include <string.h>
 #include <sys/unistd.h>
 #include <sys/stat.h>
@@ -196,7 +197,7 @@ static esp_flash_t* init_ext_flash(void)
 	// Print out the ID and size
 	uint32_t id;
 	ESP_ERROR_CHECK(esp_flash_read_id(ext_flash, &id));
-	ESP_LOGI(TAG, "Initialized external Flash, size=%d KB, ID=0x%x", ext_flash->size / 1024, id);
+	ESP_LOGI(TAG, "Initialized external Flash, size=%"PRIu32" KB, ID=0x%"PRIx32, ext_flash->size / 1024, id);
 
 	return ext_flash;
 }
@@ -204,7 +205,7 @@ static esp_flash_t* init_ext_flash(void)
 
 static const esp_partition_t* add_partition(esp_flash_t* ext_flash, const char* partition_label)
 {
-	ESP_LOGI(TAG, "Adding external Flash as a partition, label=\"%s\", size=%d KB", partition_label, ext_flash->size / 1024);
+	ESP_LOGI(TAG, "Adding external Flash as a partition, label=\"%s\", size=%"PRIu32" KB", partition_label, ext_flash->size / 1024);
 	const esp_partition_t* fat_partition;
 	ESP_ERROR_CHECK(esp_partition_register_external(ext_flash, 0, ext_flash->size, partition_label, ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_FAT, &fat_partition));
 	return fat_partition;
@@ -267,7 +268,7 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 		return -1;
 	}
 	ESP_LOGI(TAG, "Mount FAT filesystem on %s", mount_point);
-	ESP_LOGI(TAG, "s_wl_handle=%d",s_wl_handle);
+	ESP_LOGI(TAG, "s_wl_handle=%"PRIi32, s_wl_handle);
 	return s_wl_handle;
 }
 #endif // CONFIG_FATFS || CONFIG_SPI_FLASH
