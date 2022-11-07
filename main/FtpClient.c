@@ -24,7 +24,8 @@
  * This file is a part of JB_Lib.
  */
 
-
+#include <stdio.h>
+#include <inttypes.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/unistd.h>
@@ -781,13 +782,13 @@ static int clearCallbackFtpClient(NetBuf_t* nControl)
  */
 static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl)
 {
-	ESP_LOGI(__FUNCTION__, "host=%s", host);
+	ESP_LOGD(__FUNCTION__, "host=%s", host);
 	struct sockaddr_in sin;
 	memset(&sin,0, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 	sin.sin_addr.s_addr = inet_addr(host);
-	ESP_LOGI(__FUNCTION__, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+	ESP_LOGD(__FUNCTION__, "sin.sin_addr.s_addr=%"PRIx32, sin.sin_addr.s_addr);
 	if (sin.sin_addr.s_addr == 0xffffffff) {
 		struct hostent *hp;
 		hp = gethostbyname(host);
@@ -800,7 +801,7 @@ static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl
 		struct ip4_addr *ip4_addr;
 		ip4_addr = (struct ip4_addr *)hp->h_addr;
 		sin.sin_addr.s_addr = ip4_addr->addr;
-		ESP_LOGI(__FUNCTION__, "sin.sin_addr.s_addr=%x", sin.sin_addr.s_addr);
+		ESP_LOGD(__FUNCTION__, "sin.sin_addr.s_addr=%"PRIx32, sin.sin_addr.s_addr);
 	}
 
 	int sControl = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
