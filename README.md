@@ -2,6 +2,10 @@
 FTP Client for esp-idf.   
 This project use [ESP32-FTP-Client](https://github.com/JohnnyB1290/ESP32-FTP-Client). It's a great job.   
 
+# Software requirements
+esp-idf v4.4/v5.0.   
+This is because this version supports ESP32-C3.   
+
 # Installation
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
