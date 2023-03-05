@@ -82,6 +82,8 @@ This project doesn't utilize card detect (CD) and write protect (WP) signals fro
 
 On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX.   
 __GPIO pins cannot be customized.__   
+GPIO2 and GPIO12 cannot be changed.   
+So using 4-line SD mode with ESP32 is very tricky.   
 Please see the table below for the pin connections.
 
 |ESP32 pin|SD card pin|Notes|
