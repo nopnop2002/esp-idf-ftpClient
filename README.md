@@ -3,14 +3,15 @@ FTP Client for esp-idf.
 This project use [ESP32-FTP-Client](https://github.com/JohnnyB1290/ESP32-FTP-Client). It's a great job.   
 
 # Software requirements
-esp-idf v4.4/v5.0.   
-This is because this version supports ESP32-C3.   
+ESP-IDF V4.4/V5.x.   
+ESP-IDF V5.0 is required when using ESP32-C2.   
+ESP-IDF V5.1 is required when using ESP32-C6.   
 
 # Installation
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
 cd esp-idf-ftpClient/
-idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c2/esp32c3/esp32c6}
 idf.py menuconfig
 idf.py flash
 ```
@@ -61,7 +62,7 @@ The connection when using SDSPI, SDMMC, and SPI flash Memory will be described l
 
 # Using FAT file system on SPI peripheral SDCARD
 
-|ESP32|ESP32S2/S3|ESP32C3|SD card pin|Notes|
+|ESP32|ESP32S2/S3|ESP32C2/C3/C6|SD card pin|Notes|
 |:-:|:-:|:-:|:-:|:--|
 |GPIO23|GPIO35|GPIO01|MOSI|10k pull up if can't mount|
 |GPIO19|GPIO37|GPIO03|MISO||
