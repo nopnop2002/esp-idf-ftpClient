@@ -227,6 +227,13 @@ These routines allow programs access to the data streams connected to remote fil
 - ftpClientWrite() - Write to remote file
 - ftpClientClose() - Close data connection
 
+# Using long file name support   
+By default, FATFS file names can be up to 8 characters long.   
+If you use filenames longer than 8 characters, you need to change the values below.   
+![config_long_file_name_support-1](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/dbae8910-74c9-4702-bdd4-881246e3fb95)
+![config_long_file_name_support-2](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/75d1ea99-86ff-40c0-8ffc-8bd30b9fc32e)
+![config_long_file_name_support-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/6e381627-e6f4-494d-ad40-04a73b49727b)
+
 
 # Screen Shot   
 ![ScrrenShot](https://user-images.githubusercontent.com/6020549/107837485-5f133f00-6de4-11eb-9fe8-775443c6836d.jpg)
