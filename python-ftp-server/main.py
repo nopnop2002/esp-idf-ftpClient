@@ -9,13 +9,12 @@ import os
 from pyftpdlib.handlers import FTPHandler
 
 class Handler(FTPHandler):
-    def on_file_sent(self, file):
-        logging.info("send file! {}".format(file))
-        #super(Handler, self).ftp_RETR(file)
-    def on_file_received(self, file):
-        logging.info("received file! {}".format(file))
-        #super(Handler, self).ftp_RETR(file)
-
+	def on_file_sent(self, file):
+		# do something when a file has been sent
+		logging.info("send file! {}".format(file))
+	def on_file_received(self, file):
+		# do something when a file has been received
+		logging.info("received file! {}".format(file))
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 parser = argparse.ArgumentParser()
