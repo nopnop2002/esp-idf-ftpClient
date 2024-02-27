@@ -1,0 +1,4 @@
+build
+test/sdkconfig
+test/sdkconfig.old
+test/build
