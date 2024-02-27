@@ -408,7 +408,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 
 void app_main(void)
 {
-	//Initialize NVS
+	// Initialize NVS
 	esp_err_t ret;
 	ret = nvs_flash_init();
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -417,7 +417,7 @@ void app_main(void)
 	}
 	ESP_ERROR_CHECK(ret);
 
-	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
+	// Initialize WiFi
 	if (wifi_init_sta() != ESP_OK) {
 		ESP_LOGE(TAG, "Connection failed");
 		while(1) { vTaskDelay(1); }
