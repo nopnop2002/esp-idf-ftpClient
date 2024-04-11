@@ -2,6 +2,7 @@
 
 You can build FTP Server using python.   
 
+# Installation   
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
 cd esp-idf-ftpClient/python-ftp-server
@@ -16,4 +17,9 @@ optional arguments:
   --password PASSWORD  ftp user password
   --port PORT          ftp port
 ```
+
+# Default parameters   
+- user:ftpuser   
+- password:ftppass   
+- port:2121   
 
