@@ -346,28 +346,40 @@ static int xfer(const char* localfile, const char* path,
 	int rv = 1;
 	int l = 0;
 	char* dbuf = malloc(FTP_CLIENT_BUFFER_SIZE);
-	if (typ == FTP_CLIENT_FILE_WRITE) {
-		while ((l = fread(dbuf, 1, FTP_CLIENT_BUFFER_SIZE, local)) > 0) {
-			int c = writeFtpClient(dbuf, l, nData);
-			if (c < l) {
-				printf("Ftp Client xfer short write: passed %d, wrote %d\n", l, c);
-				rv = 0;
-				break;
+	if (dbuf != NULL) {
+		if (typ == FTP_CLIENT_FILE_WRITE) {
+			while ((l = fread(dbuf, 1, FTP_CLIENT_BUFFER_SIZE, local)) > 0) {
+				int c = writeFtpClient(dbuf, l, nData);
+				if (c < l) {
+					#if FTP_CLIENT_DEBUG
+					//printf("Ftp Client xfer short write: passed %d, wrote %d\n", l, c);
+					char tempbuf[128];
+					sprintf(tempbuf, "Ftp Client xfer short write: passed %d, wrote %d\n", l, c);
+					perror(tempbuf);
+					#endif
+					rv = 0;
+					break;
+				}
 			}
 		}
-	}
-	else {
-		while ((l = readFtpClient(dbuf, FTP_CLIENT_BUFFER_SIZE, nData)) > 0) {
-			if (fwrite(dbuf, 1, l, local) == 0) {
-				#if FTP_CLIENT_DEBUG
-				perror("FTP Client xfer localfile write");
-				#endif
-				rv = 0;
-				break;
+		else {
+			while ((l = readFtpClient(dbuf, FTP_CLIENT_BUFFER_SIZE, nData)) > 0) {
+				if (fwrite(dbuf, 1, l, local) == 0) {
+					#if FTP_CLIENT_DEBUG
+					perror("FTP Client xfer localfile write");
+					#endif
+					rv = 0;
+					break;
+				}
 			}
 		}
+		free(dbuf);
+	} else {
+		#if FTP_CLIENT_DEBUG
+		perror("FTP Client xfer malloc dbuf");
+		#endif
+		rv = 0;
 	}
-	free(dbuf);
 	fflush(local);
 	if(localfile != NULL){
 		fclose(local);
@@ -488,7 +500,7 @@ static int openPort(NetBuf_t* nControl, NetBuf_t** nData, int mode, int dir)
 	}
 	if ((mode == 'A') && ((ctrl->buf = malloc(FTP_CLIENT_BUFFER_SIZE)) == NULL)) {
 		#if FTP_CLIENT_DEBUG
-		perror("FTP Client openPort: calloc ctrl->buf");
+		perror("FTP Client openPort: malloc ctrl->buf");
 		#endif
 		closesocket(sData);
 		free(ctrl);
@@ -830,7 +842,7 @@ static int connectFtpClient(const char* host, uint16_t port, NetBuf_t** nControl
 	ctrl->buf = malloc(FTP_CLIENT_BUFFER_SIZE);
 	if (ctrl->buf == NULL) {
 		#if FTP_CLIENT_DEBUG
-		perror("FTP Client Error: Connect, calloc ctrl->buf");
+		perror("FTP Client Error: Connect, malloc ctrl->buf");
 		#endif
 		closesocket(sControl);
 		free(ctrl);
