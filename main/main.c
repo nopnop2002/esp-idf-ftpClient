@@ -484,7 +484,12 @@ void app_main(void)
 	// Remote Directory
 	char line[128];
 	//ftpClient->ftpClientDir(outFileName, "/", ftpClientNetBuf);
-	ftpClient->ftpClientDir(outFileName, ".", ftpClientNetBuf);
+	int result = ftpClient->ftpClientDir(outFileName, ".", ftpClientNetBuf);
+	if (result != 1) {
+		ESP_LOGE(TAG, "ftpClientDir Fail. result=%d", result);
+		return;
+	}
+	
 	FILE* f = fopen(outFileName, "r");
 	if (f == NULL) {
 		ESP_LOGE(TAG, "Failed to open file for reading");
