@@ -17,13 +17,13 @@ menu "FTP Client Configuration"
 			help
 				Select File System.
 			config SPIFFS
-				bool "SPIFFS File System on FLASH"
+				bool "SPIFFS File System on Builtin SPI Flash Memory"
 				help
-					Use SPIFFS File System on FLASH.
+					Use SPIFFS File System on Builtin SPI Flash Memory.
 			config FATFS
-				bool "FAT File System on FLASH"
+				bool "FAT File System on Builtin SPI Flash Memory"
 				help
-					Use FAT File System on FLASH.
+					Use FAT File System on Builtin SPI Flash Memory.
 			config SPI_SDCARD
 				bool "FAT File System on SPI SDCARD"
 				help
@@ -34,10 +34,9 @@ menu "FTP Client Configuration"
 				help
 					Use FAT File System on MMC SDCARD.
 			config SPI_FLASH
-				depends on IDF_TARGET_ESP32
-				bool "FAT File System on SPI Flash Memory"
+				bool "FAT File System on External SPI Flash Memory"
 				help
-					Use FAT File System on SPI Flash Memory.
+					Use FAT File System on External SPI Flash Memory.
 		endchoice
 
 		choice SDMMC_BUS_WIDTH
@@ -102,7 +101,7 @@ menu "FTP Client Configuration"
 			int "MOSI GPIO number"
 			range 0 GPIO_RANGE_MAX
 			default 23 if IDF_TARGET_ESP32
-			default 35 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+			default 11 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  1 # C3 and others
 			help
 				GPIO number (IOxx) to SPI MOSI.
@@ -112,7 +111,7 @@ menu "FTP Client Configuration"
 			int "MISO GPIO number"
 			range 0 GPIO_RANGE_MAX
 			default 19 if IDF_TARGET_ESP32
-			default 37 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+			default 13 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  3 # C3 and others
 			help
 				GPIO number (IOxx) to SPI MISO.
@@ -122,7 +121,7 @@ menu "FTP Client Configuration"
 			int "CLK GPIO number"
 			range 0 GPIO_RANGE_MAX
 			default 18 if IDF_TARGET_ESP32
-			default 36 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+			default 12 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  2 # C3 and others
 			help
 				GPIO number (IOxx) to SPI SCLK.
@@ -131,9 +130,8 @@ menu "FTP Client Configuration"
 			depends on SPI_SDCARD || SPI_FLASH
 			int "CS GPIO number"
 			range 0 GPIO_RANGE_MAX
-			default 5 if IDF_TARGET_ESP32
-			default 34 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-			default 34 if IDF_TARGET_ESP32S3
+			default  5 if IDF_TARGET_ESP32
+			default 10 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  4 # C3 and others
 			help
 				GPIO number (IOxx) to SPI SC.

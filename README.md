@@ -26,8 +26,8 @@ __If you need more storage space on FLASH, you need to modify partitions_example
 nvs,      data, nvs,     0x9000,  0x6000,
 phy_init, data, phy,     0xf000,  0x1000,
 factory,  app,  factory, 0x10000, 1M,
-storage0,  data, spiffs, ,        0x70000,  ---> This is for SPIFFS file system
-storage1,  data, fat,    ,        0x70000,  ---> This is for FAT file system
+storage0,  data, spiffs, ,        0x50000,  ---> This is for SPIFFS file system
+storage1,  data, fat,    ,        0x90000,  ---> This is for FAT file system
 ```
 
 # Configuration
@@ -38,18 +38,17 @@ storage1,  data, fat,    ,        0x70000,  ---> This is for FAT file system
 ## File System Selection   
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
-- SPIFFS file system on FLASH   
-- FAT file system on FLASH   
+- SPIFFS file system on Builtin SPI Flash Menory   
+- FAT file system on Builtin SPI Flash Menory   
 - FAT file system on SPI peripheral SDCARD   
 - FAT file system on SDMMC peripheral SDCARD(Valid only for ESP32/ESP32S3)   
-- FAT file system on SPI Flash Memory like Winbond W25Q64(Valid only for ESP32)    
-- FAT file system on USB Memory Stick(Not supported in this project)   
+- FAT file system on External SPI Flash Memory like Winbond W25Q64    
 
-![config-file-system-1](https://user-images.githubusercontent.com/6020549/165466672-edf8c8f7-6505-4df7-ad82-c78d63198271.jpg)
-![config-file-system-2](https://user-images.githubusercontent.com/6020549/166100164-07b5a47d-a9cb-481c-be12-956d08a707ca.jpg)
+![config-file-system-builtin-spiffs](https://github.com/user-attachments/assets/b4b2ad4c-f5f0-4994-98c7-8af8ff7b09a5)
+![config-file-system-builtin-fatfs](https://github.com/user-attachments/assets/39b74b16-4df5-427e-8285-93e48e41992e)
 
 Note:   
-The connection when using SDSPI, SDMMC, and SPI flash Memory will be described later.   
+The connection when using SDSPI, SDMMC, and External SPI flash Memory will be described later.   
 
 ## Wifi Setting   
 
@@ -137,20 +136,22 @@ When adding a pullup to this pin for SD card operation, consider the following:
     * In most cases, external pullup can be omitted and an internal pullup can be enabled using a `gpio_pullup_en(GPIO_NUM_12);` call. Most SD cards work fine when an internal pullup on GPIO12 line is enabled. Note that if ESP32 experiences a power-on reset while the SD card is sending data, high level on GPIO12 can be latched into the bootstrapping register, and ESP32 will enter a boot loop until external reset with correct GPIO12 level is applied.
     * Another option is to burn the flash voltage selection efuses. This will permanently select 3.3V output voltage for the internal regulator, and GPIO12 will not be used as a bootstrapping pin. Then it is safe to connect a pullup resistor to GPIO12. This option is suggested for production use.
 
-# Using FAT file system on SPI Flash Memory
+# Using FAT file system on External SPI Flash Memory
 I tested these SPI Flash Memory.   
 https://github.com/nopnop2002/esp-idf-w25q64
 
-|ESP32 pin|SPI bus signal|SPI Flash pin|
-|:-:|:-:|:-:|
-|GPIO23|MOSI|DI|
-|GPIO19|MISO|DO|
-|GPIO18|SCK|CLK|
-|GPIO5|CS|CMD|
-|3.3V||/WP|
-|3.3V||/HOLD|
-|3.3V||VCC|
-|GND||GND|
+|#|W25Q64||ESP32|ESP32-S2/S3|ESP32-C2/C3/C6|
+|:-:|:-:|:-:|:-:|:-:|:-:|
+|1|/CS|--|GPIO5|GPIO10|GPIO4|
+|2|MISO|--|GPIO19|GPIO13|GPIO3|
+|3|/WP|--|3.3V|3.3V|3.3V|
+|4|GND|--|GND|GND|GND|
+|5|MOSI|--|GPIO23|GPIO11|GPIO1|
+|6|SCK|--|GPIO18|GPIO12|GPIO2|
+|7|/HOLD|--|3.3V|3.3V|3.3V|
+|8|VCC|--|3.3V|3.3V|3.3V|
+
+![config-file-system-external-fatfs](https://github.com/user-attachments/assets/4f98df6c-1c4a-40a7-84e0-d6e7198f30e0)
 
 Note: You will get an error. It works fine after a few resets. At the moment, it is not stable.   
 ```
