@@ -176,6 +176,16 @@ I (1661) FTP: Mount FAT filesystem on /root
 ```
 
 
+# Using ESP32-CAM
+The ESP32-CAM development board has a micro SD card slot on the board.   
+It is connected to the ESP32 by SDMMC with 4-line Mode.   
+__No equipment other than the development board is required.__   
+It works very stably.   
+
+![ESP32-CAM-1](https://github.com/user-attachments/assets/89317896-e88e-460a-b658-e224ae5b9d83)
+![ESP32-CAM-2](https://github.com/user-attachments/assets/911b6683-d93a-4a9b-8f18-3c46515d698b)
+![ESP32-CAM-3](https://github.com/user-attachments/assets/287c2e53-f80a-457e-aba3-bfe745c3e2b8)
+
 
 # Using LilyGo ESP32-S2
 The LilyGo ESP32-S2 development board has a micro SD card slot on the board.   
