@@ -11,12 +11,10 @@ ESP-IDF V5.1 is required when using ESP32-C6.
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpClient
 cd esp-idf-ftpClient/
-idf.py set-target {esp32/esp32s2/esp32s3/esp32c2/esp32c3/esp32c6}
 idf.py menuconfig
 idf.py flash
 ```
 
-__If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
 
 # Configuration
@@ -41,11 +39,15 @@ You can select any one using menuconfig.
 Note:   
 The connection when using SDSPI, SDMMC, and External SPI flash Memory will be described later.   
 
+Note:   
+LITTLEFS requires ESP-IDF V5.2 or later.
+
 ## Partition table   
 Use ```partitions_example_spiffs.csv``` when you select SPIFFS file system on Builtin SPI Flash Menory.
 Use ```partitions_example_fatfs.csv``` when you select FAT file system on Builtin SPI Flash Menory.
 Use ```partitions_example_littlefs.csv``` when you select LITTLEFS file system on Builtin SPI Flash Menory.
 
+__If you need more storage space on Builtin SPI Flash Menory, you need to modify partitions_example.csv.__   
 
 ## Wifi Setting   
 
