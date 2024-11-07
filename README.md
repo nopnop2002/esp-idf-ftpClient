@@ -20,7 +20,7 @@ idf.py flash
 ![config-app](https://user-images.githubusercontent.com/6020549/165466556-7c5770da-e75b-4aa8-a49f-43c975233809.jpg)
 
 ## File System Selection   
-ESP32 supports the following file systems.   
+This project supports the following file systems.   
 You can select any one using menuconfig.   
 - SPIFFS file system on Builtin SPI Flash Menory   
 - FAT file system on Builtin SPI Flash Menory   
@@ -40,9 +40,9 @@ Note:
 LITTLEFS requires ESP-IDF V5.2 or later.
 
 ## Partition table   
-Use ```partitions_example_spiffs.csv``` when you select SPIFFS file system on Builtin SPI Flash Menory.
-Use ```partitions_example_fatfs.csv``` when you select FAT file system on Builtin SPI Flash Menory.
-Use ```partitions_example_littlefs.csv``` when you select LITTLEFS file system on Builtin SPI Flash Menory.
+Use ```partitions_example_spiffs.csv``` when you select SPIFFS file system on Builtin SPI Flash Menory.   
+Use ```partitions_example_fatfs.csv``` when you select FAT file system on Builtin SPI Flash Menory.   
+Use ```partitions_example_littlefs.csv``` when you select LITTLEFS file system on Builtin SPI Flash Menory.   
 
 __If you need more storage space on Builtin SPI Flash Menory, you need to modify partitions_example.csv.__   
 
