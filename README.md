@@ -44,7 +44,7 @@ Use ```partitions_example_spiffs.csv``` when you select SPIFFS file system on Bu
 Use ```partitions_example_fatfs.csv``` when you select FAT file system on Builtin SPI Flash Menory.   
 Use ```partitions_example_littlefs.csv``` when you select LITTLEFS file system on Builtin SPI Flash Menory.   
 
-__If you need more storage space on Builtin SPI Flash Menory, you need to modify partitions_example.csv.__   
+__If you need more storage space in the Builtin SPI Flash Menory, you will need to modify these files.__   
 
 ## Wifi Setting   
 
