@@ -2,10 +2,9 @@
 FTP Client for esp-idf.   
 This project use [ESP32-FTP-Client](https://github.com/JohnnyB1290/ESP32-FTP-Client). It's a great job.   
 
-# Software requirements
-ESP-IDF V4.4/V5.x.   
-ESP-IDF V5.0 is required when using ESP32-C2.   
-ESP-IDF V5.1 is required when using ESP32-C6.   
+# Software requirements   
+ESP-IDF V5.0 or later.   
+ESP-IDF V4.4 release branch reached EOL in July 2024.   
 
 # Installation
 ```
@@ -14,8 +13,6 @@ cd esp-idf-ftpClient/
 idf.py menuconfig
 idf.py flash
 ```
-
-
 
 # Configuration
 
