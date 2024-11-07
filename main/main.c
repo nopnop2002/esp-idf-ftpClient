@@ -27,6 +27,7 @@
 #include "driver/sdspi_host.h"
 #include "sdmmc_cmd.h"
 #include "esp_spiffs.h" 
+#include "esp_littlefs.h"
 
 // External Flash Stuff
 #include "esp_flash.h"
@@ -212,7 +213,7 @@ static const esp_partition_t* add_partition(esp_flash_t* ext_flash, const char* 
 
 #if CONFIG_SPIFFS 
 esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
-	ESP_LOGI(TAG, "Initializing SPIFFS file system");
+	ESP_LOGI(TAG, "Initializing SPIFFS file system on Builtin SPI Flash Memory");
 
 	esp_vfs_spiffs_conf_t conf = {
 		.base_path = mount_point,
@@ -240,18 +241,21 @@ esp_err_t mountSPIFFS(char * partition_label, char * mount_point) {
 	ret = esp_spiffs_info(partition_label, &total, &used);
 	if (ret != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to get SPIFFS partition information (%s)", esp_err_to_name(ret));
-	} else {
-		ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
-		ESP_LOGI(TAG, "Mount SPIFFS filesystem on %s", mount_point);
+		return ret;
 	}
-	//ESP_LOGI(TAG, "Mount SPIFFS filesystem");
+	ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+	ESP_LOGI(TAG, "Mount SPIFFS filesystem on %s", mount_point);
 	return ret;
 }
-#endif
+#endif // CONFIG_SPIFFS
 
 #if CONFIG_FATFS || CONFIG_SPI_FLASH
 wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
-	ESP_LOGI(TAG, "Initializing FAT file system");
+#if CONFIG_FATFS
+	ESP_LOGI(TAG, "Initializing FAT file system on Builtin SPI Flash Memory");
+#else
+	ESP_LOGI(TAG, "Initializing FAT file system on External SPI Flash Memory");
+#endif
 	// To mount device we need name of device partition, define base_path
 	// and allow format partition in case if it is new one and was not formated before
 	const esp_vfs_fat_mount_config_t mount_config = {
@@ -270,15 +274,52 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 		return -1;
 	}
 	ESP_LOGI(TAG, "Mount FAT filesystem on %s", mount_point);
-	ESP_LOGI(TAG, "s_wl_handle=%"PRIi32, s_wl_handle);
+	ESP_LOGD(TAG, "s_wl_handle=%"PRIi32, s_wl_handle);
 	return s_wl_handle;
 }
 #endif // CONFIG_FATFS || CONFIG_SPI_FLASH
 
+#if CONFIG_LITTLEFS 
+esp_err_t mountLITTLEFS(char * partition_label, char * mount_point) {
+	ESP_LOGI(TAG, "Initializing LittleFS file system on Builtin SPI Flash Memory");
+
+	esp_vfs_littlefs_conf_t conf = {
+		.base_path = mount_point,
+		.partition_label = partition_label,
+		.format_if_mount_failed = true,
+		.dont_mount = false,
+	};
+
+	// Use settings defined above to initialize and mount LittleFS filesystem.
+	// Note: esp_vfs_littlefs_register is an all-in-one convenience function.
+	esp_err_t ret = esp_vfs_littlefs_register(&conf);
+
+	if (ret != ESP_OK) {
+		if (ret == ESP_FAIL) {
+			ESP_LOGE(TAG, "Failed to mount or format filesystem");
+		} else if (ret == ESP_ERR_NOT_FOUND) {
+			ESP_LOGE(TAG, "Failed to find LittleFS partition");
+		} else {
+			ESP_LOGE(TAG, "Failed to initialize LittleFS (%s)", esp_err_to_name(ret));
+		}
+		return ret;
+	}
+
+	size_t total = 0, used = 0;
+	ret = esp_littlefs_info(conf.partition_label, &total, &used);
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to get LittleFS partition information (%s)", esp_err_to_name(ret));
+		esp_littlefs_format(conf.partition_label);
+		return ret;
+	}
+	ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+	ESP_LOGI(TAG, "Mount LITTLEFS filesystem on %s", mount_point);
+	return ret;
+}
+#endif // CONFIG_LITTLEFS
+
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
-
-	esp_err_t ret;
 	// Options for mounting the filesystem.
 	// If format_if_mount_failed is set to true, SD card will be partitioned and
 	// formatted in case when mounting fails.
@@ -290,12 +331,8 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	//sdmmc_card_t* card;
 
 #if CONFIG_MMC_SDCARD
+	ESP_LOGI(TAG, "Initializing FAT File System on MMC SDCARD");
 	// Use settings defined above to initialize SD card and mount FAT filesystem.
-	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
-	// Please check its source code and implement error recovery when developing
-	// production applications.
-
-	ESP_LOGI(TAG, "Initializing SDMMC peripheral");
 	sdmmc_host_t host = SDMMC_HOST_DEFAULT();
 
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
@@ -330,8 +367,10 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// connected on the bus. This is for debug / example purpose only.
 	slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
 
-	ESP_LOGI(TAG, "Mounting filesystem");
-	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
+	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
+	// Please check its source code and implement error recovery when developing
+	// production applications.
+	esp_err_t ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
 	
 #if 0
 	// GPIOs 15, 2, 4, 12, 13 should have external 10k pull-ups.
@@ -348,7 +387,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 #endif // CONFIG_MMC_SDCARD
 
 #if CONFIG_SPI_SDCARD
-	ESP_LOGI(TAG, "Initializing SPI peripheral");
+	ESP_LOGI(TAG, "Initializing FAT File System on SPI SDCARD");
 	ESP_LOGI(TAG, "SPI_MOSI=%d", CONFIG_SPI_MOSI);
 	ESP_LOGI(TAG, "SPI_MISO=%d", CONFIG_SPI_MISO);
 	ESP_LOGI(TAG, "SPI_CLK=%d", CONFIG_SPI_CLK);
@@ -375,7 +414,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 		.quadhd_io_num = -1,
 		.max_transfer_sz = 4000,
 	};
-	ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
+	esp_err_t ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
 	if (ret != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initialize bus.");
 		return ret;
@@ -386,6 +425,9 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	slot_config.gpio_cs = CONFIG_SPI_CS;
 	slot_config.host_id = host.slot;
 
+	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
+	// Please check its source code and implement error recovery when developing
+	// production applications.
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
 #endif // CONFIG_SPI_SDCARD
 
@@ -425,16 +467,22 @@ void app_main(void)
 	}
 
 #if CONFIG_SPIFFS 
-	char *partition_label = "storage0";
+	char *partition_label = "storage";
 	ret = mountSPIFFS(partition_label, MOUNT_POINT);
 	if (ret != ESP_OK) return;
 #endif
 
 #if CONFIG_FATFS
-	char *partition_label = "storage1";
+	char *partition_label = "storage";
 	wl_handle_t s_wl_handle = mountFATFS(partition_label, MOUNT_POINT);
 	if (s_wl_handle < 0) return;
 #endif 
+
+#if CONFIG_LITTLEFS 
+	char *partition_label = "storage";
+	ret = mountLITTLEFS(partition_label, MOUNT_POINT);
+	if (ret != ESP_OK) return;
+#endif
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 	sdmmc_card_t card;
@@ -554,6 +602,11 @@ void app_main(void)
 	esp_vfs_fat_spiflash_unmount(MOUNT_POINT, s_wl_handle);
 	ESP_LOGI(TAG, "FATFS unmounted");
 #endif 
+
+#if CONFIG_LITTLEFS
+	esp_vfs_littlefs_unregister(partition_label);
+	ESP_LOGI(TAG, "LittleFS unmounted");
+#endif
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 	esp_vfs_fat_sdcard_unmount(MOUNT_POINT, &card);

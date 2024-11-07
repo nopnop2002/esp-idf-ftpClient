@@ -19,17 +19,6 @@ idf.py flash
 __If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
 
-# Partition table
-```
-# Name,   Type, SubType, Offset,  Size, Flags
-# Note: if you have increased the bootloader size, make sure to update the offsets to avoid overlap
-nvs,      data, nvs,     0x9000,  0x6000,
-phy_init, data, phy,     0xf000,  0x1000,
-factory,  app,  factory, 0x10000, 1M,
-storage0,  data, spiffs, ,        0x50000,  ---> This is for SPIFFS file system
-storage1,  data, fat,    ,        0x90000,  ---> This is for FAT file system
-```
-
 # Configuration
 
 ![config-top](https://user-images.githubusercontent.com/6020549/165466546-f6609f93-679d-4de9-9b45-db11b723d815.jpg)
@@ -40,15 +29,23 @@ ESP32 supports the following file systems.
 You can select any one using menuconfig.   
 - SPIFFS file system on Builtin SPI Flash Menory   
 - FAT file system on Builtin SPI Flash Menory   
+- LITTLEFS file system on Builtin SPI Flash Menory   
 - FAT file system on SPI peripheral SDCARD   
 - FAT file system on SDMMC peripheral SDCARD(Valid only for ESP32/ESP32S3)   
 - FAT file system on External SPI Flash Memory like Winbond W25Q64    
 
 ![config-file-system-builtin-spiffs](https://github.com/user-attachments/assets/b4b2ad4c-f5f0-4994-98c7-8af8ff7b09a5)
 ![config-file-system-builtin-fatfs](https://github.com/user-attachments/assets/39b74b16-4df5-427e-8285-93e48e41992e)
+![config-file-system-builtin-littlefs](https://github.com/user-attachments/assets/72eb1497-680d-475e-ba52-d4ec0852c441)
 
 Note:   
 The connection when using SDSPI, SDMMC, and External SPI flash Memory will be described later.   
+
+## Partition table   
+Use ```partitions_example_spiffs.csv``` when you select SPIFFS file system on Builtin SPI Flash Menory.
+Use ```partitions_example_fatfs.csv``` when you select FAT file system on Builtin SPI Flash Menory.
+Use ```partitions_example_littlefs.csv``` when you select LITTLEFS file system on Builtin SPI Flash Menory.
+
 
 ## Wifi Setting   
 

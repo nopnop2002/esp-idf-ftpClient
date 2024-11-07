@@ -24,6 +24,10 @@ menu "FTP Client Configuration"
 				bool "FAT File System on Builtin SPI Flash Memory"
 				help
 					Use FAT File System on Builtin SPI Flash Memory.
+			config LITTLEFS
+				bool "LITTLEFS File System on Builtin SPI Flash Memory"
+				help
+					Use LITTLEFS File System on Builtin SPI Flash Memory.
 			config SPI_SDCARD
 				bool "FAT File System on SPI SDCARD"
 				help
