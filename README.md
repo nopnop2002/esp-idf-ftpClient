@@ -1,6 +1,5 @@
 # esp-idf-ftpClient
 FTP Client for esp-idf.   
-This project use [ESP32-FTP-Client](https://github.com/JohnnyB1290/ESP32-FTP-Client). It's a great job.   
 
 # Software requirements   
 ESP-IDF V5.0 or later.   
