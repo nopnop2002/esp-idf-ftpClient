@@ -594,7 +594,7 @@ void app_main(void)
 	ftpClient->ftpClientQuit(ftpClientNetBuf);
 
 #if CONFIG_SPIFFS
-	esp_vfs_spiffs_unregister(NULL);
+	esp_vfs_spiffs_unregister(partition_label);
 	ESP_LOGI(TAG, "SPIFFS unmounted");
 #endif
 
