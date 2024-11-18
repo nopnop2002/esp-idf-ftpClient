@@ -113,8 +113,11 @@ __This allows arbitrary GPIOs to be used to connect an SD card.__
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
+- 1line mode   
 ![config-file-system-sdmmc-esp32s3](https://user-images.githubusercontent.com/6020549/165659001-8e767614-39e5-4e19-9e90-8ce0c8e79f57.jpg)
 
+- 4line mode   
+![config-file-system-sdmmc-esp32s3-4line](https://github.com/user-attachments/assets/ddb93c01-07a3-41f7-8cf7-07bea2a8014d)
 
 ## Note about GPIO2 (ESP32 only)   
 GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode. One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
