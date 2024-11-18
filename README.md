@@ -94,8 +94,11 @@ Please see the table below for the pin connections.
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
+- 1line mode   
 ![config-file-system-sdmmc-esp32](https://user-images.githubusercontent.com/6020549/165658970-6956c9c4-eb24-44fe-99c2-758045300adc.jpg)
 
+- 4line mode   
+![config-file-system-sdmmc-esp32-4line](https://github.com/user-attachments/assets/5821a686-8ca0-40cc-b0c6-ad247ee29c4b)
 
 On ESP32-S3, SDMMC peripheral is connected to GPIO pins using GPIO matrix.   
 __This allows arbitrary GPIOs to be used to connect an SD card.__   
