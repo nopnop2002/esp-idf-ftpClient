@@ -269,6 +269,32 @@ By changing this, you can see the response from the server:
 https://github.com/nopnop2002/esp-idf-ftpClient/tree/master/python-ftp-server
 
 
+# How to use this component in your project   
+Create idf_component.yml in the same directory as main.c.   
+```
+YourProject --+-- CMakeLists.txt
+              +-- main --+-- main.c
+                         +-- CMakeLists.txt
+                         +-- idf_component.yml
+```
+
+```
+dependencies:
+  ftpClient:
+    path: components/ftpClient/
+    git: https://github.com/nopnop2002/esp-idf-ftpClient.git
+```
+
+When you build a projects esp-idf will automaticly fetch repository to managed_components dir and link with your code.   
+```
+YourProject --+-- CMakeLists.txt
+              +-- main --+-- main.c
+                         +-- CMakeLists.txt
+                         +-- idf_component.yml
+              +-- managed_components ----- ftpClient
+```
+
+
 # Reference   
 - FTP Server using FAT File system.   
 Since it uses the FAT file system instead of SPIFFS, directory operations are possible.   
