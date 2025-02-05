@@ -281,7 +281,7 @@ YourProject --+-- CMakeLists.txt
 Contents of idf_component.yml.
 ```
 dependencies:
-  ftpClient:
+  nopnop2002/ftpClient:
     path: components/ftpClient/
     git: https://github.com/nopnop2002/esp-idf-ftpClient.git
 ```
@@ -292,7 +292,7 @@ YourProject --+-- CMakeLists.txt
               +-- main --+-- main.c
                          +-- CMakeLists.txt
                          +-- idf_component.yml
-              +-- managed_components ----- ftpClient
+              +-- managed_components ----- nopnop2002__ftpClient
 ```
 
 
