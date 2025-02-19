@@ -39,11 +39,11 @@ Note:
 LITTLEFS requires ESP-IDF V5.2 or later.
 
 ## Partition table   
-Use ```partitions_example_spiffs.csv``` when you select SPIFFS file system on Builtin SPI Flash Menory.   
-Use ```partitions_example_fatfs.csv``` when you select FAT file system on Builtin SPI Flash Menory.   
-Use ```partitions_example_littlefs.csv``` when you select LITTLEFS file system on Builtin SPI Flash Menory.   
+Use ```partitions_example_spiffs.csv``` when you select SPIFFS file system on Builtin SPI Flash Memory.   
+Use ```partitions_example_fatfs.csv``` when you select FAT file system on Builtin SPI Flash Memory.   
+Use ```partitions_example_littlefs.csv``` when you select LITTLEFS file system on Builtin SPI Flash Memory.   
 
-__If you need more storage space in the Builtin SPI Flash Menory, you will need to modify these files.__   
+__If you need more storage space in the Builtin SPI Flash Memory, you will need to modify these files.__   
 
 ## Wifi Setting   
 
