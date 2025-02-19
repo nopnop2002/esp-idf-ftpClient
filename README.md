@@ -21,9 +21,9 @@ idf.py flash
 ## File System Selection   
 This project supports the following file systems.   
 You can select any one using menuconfig.   
-- SPIFFS file system on Builtin SPI Flash Menory   
-- FAT file system on Builtin SPI Flash Menory   
-- LITTLEFS file system on Builtin SPI Flash Menory   
+- SPIFFS file system on Builtin SPI Flash Memory   
+- FAT file system on Builtin SPI Flash Memory   
+- LITTLEFS file system on Builtin SPI Flash Memory   
 - FAT file system on SPI peripheral SDCARD   
 - FAT file system on SDMMC peripheral SDCARD(Valid only for ESP32/ESP32S3)   
 - FAT file system on External SPI Flash Memory like Winbond W25Q64    
