@@ -54,6 +54,9 @@ __If you need more storage space in the Builtin SPI Flash Memory, you will need 
 
 ![config-ftp-server](https://user-images.githubusercontent.com/6020549/187052709-7873970e-c72e-4ea0-b904-85e1b0afc799.jpg)
 
+You can use [this](https://dlptest.com/ftp-test/) public FTP server for testing.   
+The files will be stored for 10 minutes before being deleted.   
+
 # Using FAT file system on SPI peripheral SDCARD
 
 |ESP32|ESP32S2/S3|ESP32C2/C3/C6|SD card pin|Notes|
