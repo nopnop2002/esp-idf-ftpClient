@@ -60,7 +60,7 @@ The files will be stored for 10 minutes before being deleted.
 cd esp-idf-ftpClient
 rm sdkconfig
 cd main
-cp Kconfig.projbuild.dlptest
+cp Kconfig.projbuild.dlptest Kconfig.projbuild
 cd ..
 idf.py menuconfig
 idf.py build
