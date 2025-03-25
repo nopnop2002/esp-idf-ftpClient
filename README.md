@@ -67,6 +67,8 @@ idf.py menuconfig
 idf.py build
 ```
 
+![Image](https://github.com/user-attachments/assets/3fc731ff-b081-4807-9b34-c8aa8513a6e2)
+
 # Using FAT file system on SPI peripheral SDCARD
 
 |ESP32|ESP32S2/S3|ESP32C2/C3/C6|SD card pin|Notes|
