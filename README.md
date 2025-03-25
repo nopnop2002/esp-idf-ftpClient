@@ -56,6 +56,15 @@ __If you need more storage space in the Builtin SPI Flash Memory, you will need 
 
 You can use [this](https://dlptest.com/ftp-test/) public FTP server for testing.   
 The files will be stored for 10 minutes before being deleted.   
+```
+cd esp-idf-ftpClient
+rm sdkconfig
+cd main
+cp Kconfig.projbuild.dlptest
+cd ..
+idf.py menuconfig
+idf.py build
+```
 
 # Using FAT file system on SPI peripheral SDCARD
 

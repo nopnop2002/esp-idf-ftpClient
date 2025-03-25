@@ -309,7 +309,7 @@ esp_err_t mountLITTLEFS(char * partition_label, char * mount_point) {
 	ret = esp_littlefs_info(conf.partition_label, &total, &used);
 	if (ret != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to get LittleFS partition information (%s)", esp_err_to_name(ret));
-		esp_littlefs_format(conf.partition_label);
+		//esp_littlefs_format(conf.partition_label);
 		return ret;
 	}
 	ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
@@ -461,10 +461,7 @@ void app_main(void)
 	ESP_ERROR_CHECK(ret);
 
 	// Initialize WiFi
-	if (wifi_init_sta() != ESP_OK) {
-		ESP_LOGE(TAG, "Connection failed");
-		while(1) { vTaskDelay(1); }
-	}
+	ESP_ERROR_CHECK(wifi_init_sta());
 
 #if CONFIG_SPIFFS 
 	char *partition_label = "storage";
