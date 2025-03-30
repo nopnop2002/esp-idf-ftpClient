@@ -68,6 +68,7 @@ idf.py build
 ```
 ![Image](https://github.com/user-attachments/assets/3fc731ff-b081-4807-9b34-c8aa8513a6e2)
 
+FTP Server using python   
 You can set up an FTP server with [this](https://github.com/nopnop2002/esp-idf-ftpClient/tree/master/python-ftp-server) script.
 
 
@@ -281,9 +282,6 @@ By changing this, you can see the response from the server:
 #define FTP_CLIENT_DEBUG                    2
 ```
 
-
-# FTP Server using python
-https://github.com/nopnop2002/esp-idf-ftpClient/tree/master/python-ftp-server
 
 
 # How to use this component in your project   
