@@ -227,7 +227,17 @@ It works very stably.
 
 
 # Benchmarking with ESP32-CAM   
-I used this micro SD card.   
+The unit is KB/Sec.   
+|File System|Interface|Write Speed|Read Speed||
+|:-:|:-:|:-:|:-:|:-:|
+|FATFS|Builtin SPI Flash Memory|46|2625|4096 Byte Sector|
+|SPIFFS|Builtin SPI Flash Memory|17|1034||
+|LITTLEFS|Builtin SPI Flash Memory|51|1678||
+|FATFS|External SDMMC Card (1Line)|499|875|(*1)|
+|FATFS|External SDMMC Card (4Line)|572|1190|(*1)|
+|FATFS|External SDSPI Card|398|620|(*1)|
+
+(*1) I used this micro SD card.   
 ```
 Name: SB16G
 Type: SDHC
@@ -235,16 +245,6 @@ Speed: 20.00 MHz (limit: 20.00 MHz)
 Size: 15193MB
 CSD: ver=2, sector_size=512, capacity=31116288 read_bl_len=9
 ```
-
-The unit is KB/Sec.   
-|File System|Interface|Write Speed|Read Speed||
-|:-:|:-:|:-:|:-:|:-:|
-|FATFS|Builtin SPI Flash Memory|46|2625|4096 Byte Sector|
-|SPIFFS|Builtin SPI Flash Memory|17|1034||
-|LITTLEFS|Builtin SPI Flash Memory|51|1678||
-|FATFS|External SDMMC Card (1Line)|499|875||
-|FATFS|External SDMMC Card (4Line)|572|1190||
-|FATFS|External SDSPI Card|398|620||
 
 # API
 Based on [ftplib](https://nbpfaus.net/~pfau/ftplib/ftplib.html) V4.0-1.   
