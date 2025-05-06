@@ -226,7 +226,16 @@ It works very stably.
 ![LilyGo_ESP32-S2-3](https://github.com/user-attachments/assets/6d62b8ba-696c-4907-99a2-1fb6cc862efe)
 
 
-
+# Benchmarking with ESP32-CAM   
+The unit is KB/Sec.   
+|File System|Write Speed|Read Speed||
+|:-:|:-:|:-:|:-:|
+|FATFS|46|2625|4096 Byte Sector|
+|SPIFFS|17|1034||
+|LITTLEFS|51|1678||
+|SDMMS(1Line)|499|875||
+|SDMMS(4Line)|572|1190||
+|SDSPI|398|620||
 
 # API
 Based on [ftplib](https://nbpfaus.net/~pfau/ftplib/ftplib.html) V4.0-1.   
