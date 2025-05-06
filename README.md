@@ -24,8 +24,8 @@ You can select any one using menuconfig.
 - SPIFFS file system on Builtin SPI Flash Memory   
 - FAT file system on Builtin SPI Flash Memory   
 - LITTLEFS file system on Builtin SPI Flash Memory   
-- FAT file system on SPI peripheral SDCARD   
-- FAT file system on MMC peripheral SDCARD(Valid only for ESP32/ESP32S3)   
+- FAT file system on SDSPI Interface   
+- FAT file system on SDMMC Interface (Valid only for ESP32/ESP32S3)   
 - FAT file system on External SPI Flash Memory like Winbond W25Q64    
 
 ![config-file-system-builtin-spiffs](https://github.com/user-attachments/assets/b4b2ad4c-f5f0-4994-98c7-8af8ff7b09a5)
