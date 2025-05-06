@@ -24,8 +24,8 @@ You can select any one using menuconfig.
 - SPIFFS on Builtin SPI Flash Memory   
 - FATFS on Builtin SPI Flash Memory   
 - LITTLEFS on Builtin SPI Flash Memory   
-- FATFS on SDSPI Interface   
-- FATFS on SDMMC Interface (Valid only for ESP32/ESP32S3)   
+- FATFS on SD card with SDSPI Interface   
+- FATFS on SD card with SDMMC Interface (Valid only for ESP32/ESP32S3)   
 - FATFS on External SPI Flash Memory like Winbond W25Q64    
 
 ![config-file-system-builtin-spiffs](https://github.com/user-attachments/assets/b4b2ad4c-f5f0-4994-98c7-8af8ff7b09a5)
