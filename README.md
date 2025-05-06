@@ -227,7 +227,7 @@ It works very stably.
 
 
 # Benchmarking with ESP32-CAM   
-Using this micro SD-CARD:
+I used this micro SD card.   
 ```
 Name: SB16G
 Type: SDHC
