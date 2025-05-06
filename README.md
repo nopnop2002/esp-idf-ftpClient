@@ -227,6 +227,15 @@ It works very stably.
 
 
 # Benchmarking with ESP32-CAM   
+Using this micro SD-CARD:
+```
+Name: SB16G
+Type: SDHC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 15193MB
+CSD: ver=2, sector_size=512, capacity=31116288 read_bl_len=9
+```
+
 The unit is KB/Sec.   
 |File System|Write Speed|Read Speed||
 |:-:|:-:|:-:|:-:|
