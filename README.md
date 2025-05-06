@@ -237,14 +237,14 @@ CSD: ver=2, sector_size=512, capacity=31116288 read_bl_len=9
 ```
 
 The unit is KB/Sec.   
-|File System|Write Speed|Read Speed||
-|:-:|:-:|:-:|:-:|
-|FATFS|46|2625|4096 Byte Sector|
-|SPIFFS|17|1034||
-|LITTLEFS|51|1678||
-|SDMMS(1Line)|499|875||
-|SDMMS(4Line)|572|1190||
-|SDSPI|398|620||
+|File System|Interface|Write Speed|Read Speed||
+|:-:|:-:|:-:|:-:|:-:|
+|FATFS|Builtin SPI Flash Memory|46|2625|4096 Byte Sector|
+|SPIFFS|Builtin SPI Flash Memory|17|1034||
+|LITTLEFS|Builtin SPI Flash Memory|51|1678||
+|FATFS|External SDMMS Card (1Line)|499|875||
+|FATFS|External SDMMS Card (4Line)|572|1190||
+|FATFS|External SDSPI Card|398|620||
 
 # API
 Based on [ftplib](https://nbpfaus.net/~pfau/ftplib/ftplib.html) V4.0-1.   
