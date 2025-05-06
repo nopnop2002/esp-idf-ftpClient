@@ -242,8 +242,8 @@ The unit is KB/Sec.
 |FATFS|Builtin SPI Flash Memory|46|2625|4096 Byte Sector|
 |SPIFFS|Builtin SPI Flash Memory|17|1034||
 |LITTLEFS|Builtin SPI Flash Memory|51|1678||
-|FATFS|External SDMMS Card (1Line)|499|875||
-|FATFS|External SDMMS Card (4Line)|572|1190||
+|FATFS|External SDMMC Card (1Line)|499|875||
+|FATFS|External SDMMC Card (4Line)|572|1190||
 |FATFS|External SDSPI Card|398|620||
 
 # API
