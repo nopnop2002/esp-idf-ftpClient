@@ -498,6 +498,21 @@ static int openPort(NetBuf_t* nControl, NetBuf_t** nData, int mode, int dir)
 		closesocket(sData);
 		return -1;
 	}
+
+	/*
+	ctrl->buf is only used with ASCII mode.
+
+	With ASCII mode:
+	readFtpClient() uses readLine().
+	writeFtpClient() uses writeLine().
+	These functions use this memory.
+	This memory will be released in closeFtpClient().
+
+	With BINARY mode:
+	readFtpClient() uses recv().
+	writeFtpClient() uses send().
+	*/
+
 	if ((mode == 'A') && ((ctrl->buf = malloc(FTP_CLIENT_BUFFER_SIZE)) == NULL)) {
 		#if FTP_CLIENT_DEBUG
 		perror("FTP Client openPort: malloc ctrl->buf");
