@@ -383,7 +383,7 @@ static int xfer(const char* localfile, const char* path,
 	fflush(local);
 	if(localfile != NULL){
 		fclose(local);
-		if(rv != 1)
+		if(rv != 1 && typ == FTP_CLIENT_FILE_READ)
 			unlink(localfile);
 	}
 	closeFtpClient(nData);
