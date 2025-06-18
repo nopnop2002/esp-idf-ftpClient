@@ -498,14 +498,6 @@ static int openPort(NetBuf_t* nControl, NetBuf_t** nData, int mode, int dir)
 		closesocket(sData);
 		return -1;
 	}
-	if ((mode == 'A') && ((ctrl->buf = malloc(FTP_CLIENT_BUFFER_SIZE)) == NULL)) {
-		#if FTP_CLIENT_DEBUG
-		perror("FTP Client openPort: malloc ctrl->buf");
-		#endif
-		closesocket(sData);
-		free(ctrl);
-		return -1;
-	}
 	ctrl->handle = sData;
 	ctrl->dir = dir;
 	ctrl->idletime = nControl->idletime;
