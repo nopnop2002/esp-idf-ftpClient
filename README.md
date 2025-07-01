@@ -335,7 +335,7 @@ YourProject --+-- CMakeLists.txt
 Since it uses the FAT file system instead of SPIFFS, directory operations are possible.   
 https://github.com/nopnop2002/esp-idf-ftpServer   
 
-- File copy using scp.   
+- File copy using scp/sftp.   
 https://github.com/nopnop2002/esp-idf-scp-client
 
 - File copy using smb.   
