@@ -99,7 +99,6 @@ static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_
 
 esp_err_t wifi_init_sta()
 {
-	esp_err_t ret_value = ESP_OK;
 	s_wifi_event_group = xEventGroupCreate();
 
 	ESP_LOGI(TAG,"ESP-IDF Ver%d.%d", ESP_IDF_VERSION_MAJOR, ESP_IDF_VERSION_MINOR);
@@ -119,15 +118,28 @@ esp_err_t wifi_init_sta()
 	wifi_config_t wifi_config = {
 		.sta = {
 			.ssid = CONFIG_ESP_WIFI_SSID,
-			.password = CONFIG_ESP_WIFI_PASSWORD
+			.password = CONFIG_ESP_WIFI_PASSWORD,
+			.scan_method = WIFI_ALL_CHANNEL_SCAN,
+			.failure_retry_cnt = CONFIG_ESP_MAXIMUM_RETRY,
+			/* Setting a password implies station will connect to all security modes including WEP/WPA.
+			 * However these modes are deprecated and not advisable to be used. Incase your Access point
+			 * doesn't support WPA2, these mode can be enabled by commenting below line */
+			.threshold.authmode = WIFI_AUTH_WPA2_PSK,
+
+			.pmf_cfg = {
+				.capable = true,
+				.required = false
+			},
 		},
 	};
-	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
-	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
-	ESP_ERROR_CHECK(esp_wifi_start() );
+	ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
+	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+	ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
+	ESP_ERROR_CHECK(esp_wifi_start());
 
 	/* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
 	 * number of re-tries (WIFI_FAIL_BIT). The bits are set by event_handler() (see above) */
+	esp_err_t ret_value = ESP_OK;
 	EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
 		WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
 		pdFALSE,			// xClearOnExit
