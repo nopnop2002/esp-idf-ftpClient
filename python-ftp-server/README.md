@@ -5,7 +5,6 @@ Tutorial is [here](https://pyftpdlib.readthedocs.io/en/latest/tutorial.html).
 
 # Installation   
 ```
-git clone https://github.com/nopnop2002/esp-idf-ftpClient
 cd esp-idf-ftpClient/python-ftp-server
 python3 -m pip install pyftpdlib
 
