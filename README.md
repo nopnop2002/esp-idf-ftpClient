@@ -70,7 +70,7 @@ __If you need more storage space in the Builtin SPI Flash Memory, you will need 
 	![Image](https://github.com/user-attachments/assets/3fc731ff-b081-4807-9b34-c8aa8513a6e2)
 
 - Using Python FTP Server   
-	You can set up an FTP server with [this](https://github.com/nopnop2002/esp-idf-ftpClient/tree/master/python-ftp-server) script.
+	You can set up an FTP server with [this](https://github.com/nopnop2002/esp-idf-ftpClient/tree/master/python-ftp-server) script.   
 	Use port number 2121.   
 
 # Using FAT file system on SPI peripheral SDCARD
