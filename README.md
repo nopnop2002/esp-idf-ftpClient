@@ -54,7 +54,7 @@ __If you need more storage space in the Builtin SPI Flash Memory, you will need 
 
 ![config-ftp-server](https://user-images.githubusercontent.com/6020549/187052709-7873970e-c72e-4ea0-b904-85e1b0afc799.jpg)
 
-- Public FTP Server   
+- Using Public FTP Server   
 	You can use [this](https://dlptest.com/ftp-test/) public FTP server for testing.   
 	The files will be stored for 10 minutes before being deleted.   
 	```
@@ -69,9 +69,9 @@ __If you need more storage space in the Builtin SPI Flash Memory, you will need 
 	```
 	![Image](https://github.com/user-attachments/assets/3fc731ff-b081-4807-9b34-c8aa8513a6e2)
 
-- FTP Server using python   
+- Using Python FTP Server   
 	You can set up an FTP server with [this](https://github.com/nopnop2002/esp-idf-ftpClient/tree/master/python-ftp-server) script.
-
+	Use port number 2121.   
 
 # Using FAT file system on SPI peripheral SDCARD
 
