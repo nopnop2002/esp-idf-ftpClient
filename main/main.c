@@ -155,7 +155,7 @@ esp_err_t wifi_init_sta()
 		ret_value = ESP_FAIL;
 	} else {
 		ESP_LOGE(TAG, "UNEXPECTED EVENT");
-		ret_value = ESP_ERR_INVALID_STATE;
+		ret_value = ESP_FAIL;
 	}
 
 	ESP_LOGI(TAG, "wifi_init_sta finished.");
@@ -477,8 +477,7 @@ void app_main(void)
 
 #if CONFIG_SPIFFS 
 	char *partition_label = "storage";
-	ret = mountSPIFFS(partition_label, MOUNT_POINT);
-	if (ret != ESP_OK) return;
+	ESP_ERROR_CHECK(mountSPIFFS(partition_label, MOUNT_POINT));
 #endif
 
 #if CONFIG_FATFS
@@ -489,14 +488,12 @@ void app_main(void)
 
 #if CONFIG_LITTLEFS 
 	char *partition_label = "storage";
-	ret = mountLITTLEFS(partition_label, MOUNT_POINT);
-	if (ret != ESP_OK) return;
+	ESP_ERROR_CHECK(mountLITTLEFS(partition_label, MOUNT_POINT));
 #endif
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 	sdmmc_card_t card;
-	ret = mountSDCARD(MOUNT_POINT, &card);
-	if (ret != ESP_OK) return;
+	ESP_ERROR_CHECK(mountSDCARD(MOUNT_POINT, &card));
 #endif 
 
 #if CONFIG_SPI_FLASH

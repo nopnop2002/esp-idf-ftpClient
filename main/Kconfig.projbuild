@@ -2,15 +2,6 @@ menu "FTP Client Configuration"
 
 	menu "File System Setting"
 
-		config GPIO_RANGE_MAX
-			int
-			default 33 if IDF_TARGET_ESP32
-			default 46 if IDF_TARGET_ESP32S2
-			default 48 if IDF_TARGET_ESP32S3
-			default 18 if IDF_TARGET_ESP32C2
-			default 19 if IDF_TARGET_ESP32C3
-			default 30 if IDF_TARGET_ESP32C6
-
 		choice FILE_SYSTEM
 			prompt "File System Selection"
 			default SPIFFS
@@ -103,7 +94,7 @@ menu "FTP Client Configuration"
 		config SPI_MOSI
 			depends on SPI_SDCARD || SPI_FLASH
 			int "MOSI GPIO number"
-			range 0 GPIO_RANGE_MAX
+			range 0 SOC_GPIO_OUT_RANGE_MAX
 			default 23 if IDF_TARGET_ESP32
 			default 11 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  1 # C3 and others
@@ -113,7 +104,7 @@ menu "FTP Client Configuration"
 		config SPI_MISO
 			depends on SPI_SDCARD || SPI_FLASH
 			int "MISO GPIO number"
-			range 0 GPIO_RANGE_MAX
+			range 0 SOC_GPIO_IN_RANGE_MAX
 			default 19 if IDF_TARGET_ESP32
 			default 13 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  3 # C3 and others
@@ -123,7 +114,7 @@ menu "FTP Client Configuration"
 		config SPI_CLK
 			depends on SPI_SDCARD || SPI_FLASH
 			int "CLK GPIO number"
-			range 0 GPIO_RANGE_MAX
+			range 0 SOC_GPIO_OUT_RANGE_MAX
 			default 18 if IDF_TARGET_ESP32
 			default 12 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  2 # C3 and others
@@ -133,7 +124,7 @@ menu "FTP Client Configuration"
 		config SPI_CS
 			depends on SPI_SDCARD || SPI_FLASH
 			int "CS GPIO number"
-			range 0 GPIO_RANGE_MAX
+			range 0 SOC_GPIO_OUT_RANGE_MAX
 			default  5 if IDF_TARGET_ESP32
 			default 10 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  4 # C3 and others
@@ -143,7 +134,7 @@ menu "FTP Client Configuration"
 		config SPI_POWER
 			depends on SPI_SDCARD
 			int "POWER GPIO number"
-			range -1 GPIO_RANGE_MAX
+			range -1 SOC_GPIO_OUT_RANGE_MAX
 			default -1
 			help
 				GPIO number (IOxx) to SPI POWER.
